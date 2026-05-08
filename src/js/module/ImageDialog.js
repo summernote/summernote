@@ -1,12 +1,12 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 import key from '../core/key';
 
 export default class ImageDialog {
   constructor(context) {
     this.context = context;
-    this.ui = $.summernote.ui;
-    this.$body = $(document.body);
+    this.ui = $$.summernote.ui;
+    this.$body = $$(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -14,30 +14,37 @@ export default class ImageDialog {
 
   initialize() {
     let imageLimitation = '';
+    const imageInputId = 'note-dialog-image-file-' + this.options.id;
     if (this.options.maximumImageFileSize) {
       const unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
       const readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
-                         ' ' + ' KMGTP'[unit] + 'B';
-      imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
+                          ' ' + ' KMGTP'[unit] + 'B';
+      imageLimitation = `<div class="note-image-dialog-help text-muted">${this.lang.image.maximumFileSize + ' : ' + readableSize}</div>`;
     }
 
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
     const body = [
-      '<div class="form-group note-form-group note-group-select-from-files">',
-        '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
-        '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ',
-        ' type="file" name="files" accept="'+this.options.acceptImageFileTypes+'" multiple="multiple"/>',
-        imageLimitation,
-      '</div>',
-      '<div class="form-group note-group-image-url">',
-        '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>',
-        '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>',
+      '<div class="note-image-dialog">',
+        '<div class="form-group note-form-group note-group-select-from-files">',
+          '<label for="' + imageInputId + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
+          '<input id="' + imageInputId + '" class="note-image-input form-control note-form-control note-input"',
+          ' type="file" name="files" accept="' + this.options.acceptImageFileTypes + '" multiple="multiple"',
+          ' aria-label="' + this.lang.image.selectFromFiles + '"/>',
+          '<div class="note-image-dialog-file-name text-muted" aria-live="polite"></div>',
+          imageLimitation,
+        '</div>',
+        '<div class="note-image-dialog-divider" aria-hidden="true"></div>',
+        '<div class="form-group note-form-group note-group-image-url">',
+          '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>',
+          '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="url" placeholder="https://"/>',
+        '</div>',
       '</div>',
     ].join('');
-    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
-    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
+    const footer = `<button type="button" class="${buttonClass}" disabled>${this.lang.image.insert}</button>`;
 
     this.$dialog = this.ui.dialog({
+      className: 'note-image-dialog-modal',
       title: this.lang.image.insert,
       fade: this.options.dialogsFade,
       body: body,
@@ -76,7 +83,7 @@ export default class ImageDialog {
       } else { // array of files
         this.context.invoke('editor.insertImagesOrCallback', data);
       }
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }
@@ -84,25 +91,33 @@ export default class ImageDialog {
   /**
    * show image dialog
    *
-   * @param {jQuery} $dialog
    * @return {Promise}
    */
   showImageDialog() {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
+      let isSettled = false;
       const $imageInput = this.$dialog.find('.note-image-input');
+      const $imageFileName = this.$dialog.find('.note-image-dialog-file-name');
       const $imageUrl = this.$dialog.find('.note-image-url');
       const $imageBtn = this.$dialog.find('.note-image-btn');
 
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        // Cloning imageInput to clear element.
-        $imageInput.replaceWith($imageInput.clone().on('change', (event) => {
-          deferred.resolve(event.target.files || event.target.value);
-        }).val(''));
+        $imageInput.off('change').val('').on('change', (event) => {
+          const files = Array.from(event.target.files || []);
+          if (!files.length) {
+            $imageFileName.text('');
+            return;
+          }
 
-        $imageUrl.on('input paste propertychange', () => {
-          this.ui.toggleBtn($imageBtn, $imageUrl.val());
+          $imageFileName.text(files.map((file) => file.name).join(', '));
+          isSettled = true;
+          resolve(files);
+        });
+
+        $imageUrl.off().on('input paste propertychange', () => {
+          this.ui.toggleBtn($imageBtn, $imageUrl.val().trim());
         }).val('');
 
         if (!env.isSupportTouch) {
@@ -111,7 +126,8 @@ export default class ImageDialog {
 
         $imageBtn.on('click', (event) => {
           event.preventDefault();
-          deferred.resolve($imageUrl.val());
+          isSettled = true;
+          resolve($imageUrl.val().trim());
         });
 
         this.bindEnterKey($imageUrl, $imageBtn);
@@ -121,9 +137,11 @@ export default class ImageDialog {
         $imageInput.off();
         $imageUrl.off();
         $imageBtn.off();
+        $imageFileName.text('');
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
+        if (!isSettled) {
+          isSettled = true;
+          reject();
         }
       });
 

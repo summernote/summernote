@@ -6,7 +6,7 @@ export default class History {
     this.stackOffset = -1;
     this.context = context;
     this.$editable = context.layoutInfo.editable;
-    this.editable = this.$editable[0];
+    this.editable = this.$editable.get(0);
   }
 
   makeSnapshot() {

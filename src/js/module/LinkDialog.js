@@ -1,18 +1,18 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 import key from '../core/key';
 import func from '../core/func';
 
 const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const TEL_PATTERN = /^\+?\d[\d\s-]{5,}\d$/;
 const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
 
 export default class LinkDialog {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
-    this.$body = $(document.body);
+    this.ui = $$.summernote.ui;
+    this.$body = $$(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -23,28 +23,36 @@ export default class LinkDialog {
   initialize() {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
-      '<div class="form-group note-form-group">',
-        `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`,
-        `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`,
+      '<div class="note-link-dialog">',
+        '<div class="form-group note-form-group">',
+          `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`,
+          `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`,
+        '</div>',
+        '<div class="note-link-dialog-divider" aria-hidden="true"></div>',
+        '<div class="form-group note-form-group">',
+          `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`,
+          `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`,
+        '</div>',
+        !this.options.disableLinkTarget
+          ? (() => {
+            const container = document.createElement('div');
+            const checkbox = this.ui.checkbox({
+              className: 'sn-checkbox-open-in-new-window',
+              text: this.lang.link.openInNewWindow,
+              checked: true,
+            }).render();
+            container.appendChild(checkbox.get(0));
+            return container.innerHTML;
+          })()
+          : '',
       '</div>',
-      '<div class="form-group note-form-group">',
-        `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`,
-        `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`,
-      '</div>',
-      !this.options.disableLinkTarget
-        ? $('<div></div>').append(this.ui.checkbox({
-          className: 'sn-checkbox-open-in-new-window',
-          text: this.lang.link.openInNewWindow,
-          checked: true,
-        }).render()).html()
-        : '',
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
-    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.link.insert}" disabled>`;
+    const footer = `<button type="button" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
 
     this.$dialog = this.ui.dialog({
-      className: 'link-dialog',
+      className: 'note-link-dialog-modal',
       title: this.lang.link.insert,
       fade: this.options.dialogsFade,
       body: body,
@@ -101,7 +109,8 @@ export default class LinkDialog {
    * @return {Promise}
    */
   showLinkDialog(linkInfo) {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
+      let isSettled = false;
       const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
@@ -153,7 +162,8 @@ export default class LinkDialog {
         $linkBtn.one('click', (event) => {
           event.preventDefault();
 
-          deferred.resolve({
+          isSettled = true;
+          resolve({
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
@@ -169,13 +179,14 @@ export default class LinkDialog {
         $linkUrl.off();
         $linkBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
+        if (!isSettled) {
+          isSettled = true;
+          reject();
         }
       });
 
       this.ui.showDialog(this.$dialog);
-    }).promise();
+    });
   }
 
   /**
@@ -188,7 +199,7 @@ export default class LinkDialog {
     this.showLinkDialog(linkInfo).then((linkInfo) => {
       this.context.invoke('editor.restoreRange');
       this.context.invoke('editor.createLink', linkInfo);
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }

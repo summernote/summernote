@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import $ from 'jquery';
+import $$ from '@/js/core/dom-query.js';
 import dom from '@/js/core/dom';
 import range from '@/js/core/range';
 
@@ -8,7 +8,7 @@ describe('base:core.range', () => {
     describe('1 depth', () => {
       var $para;
       beforeAll(() => {
-        var $cont = $('<div class="note-editable"><p>para1</p><p>para2</p></div>');
+        var $cont = $$('<div class="note-editable"><p>para1</p><p>para2</p></div>');
         $para = $cont.find('p');
       });
 
@@ -25,7 +25,7 @@ describe('base:core.range', () => {
 
     describe('multi depth', () => {
       it('should return array of a paragraph', () => {
-        var $cont = $('<div class="note-editable"><p>p<b>ar</b>a1</p><p>para2</p></div>');
+        var $cont = $$('<div class="note-editable"><p>p<b>ar</b>a1</p><p>para2</p></div>');
         var $b = $cont.find('b');
         var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0);
 
@@ -35,7 +35,7 @@ describe('base:core.range', () => {
 
     describe('on list, on heading', () => {
       it('should return array of list paragraphs', () => {
-        var $cont = $('<div class="note-editable"><ul><li>para1</li><li>para2</li></ul></div>');
+        var $cont = $$('<div class="note-editable"><ul><li>para1</li><li>para2</li></ul></div>');
         var $li = $cont.find('li');
         var rng = range.create($li[0].firstChild, 0, $li[1].firstChild, 1);
 
@@ -43,7 +43,7 @@ describe('base:core.range', () => {
       });
 
       it('should return array of list paragraphs', () => {
-        var $cont = $('<div class="note-editable"><h1>heading1</h1><h2>heading2</h2></div>');
+        var $cont = $$('<div class="note-editable"><h1>heading1</h1><h2>heading2</h2></div>');
         var $h1 = $cont.find('h1');
         var $h2 = $cont.find('h2');
         var rng = range.create($h1[0].firstChild, 0, $h2[0].firstChild, 1);
@@ -56,7 +56,7 @@ describe('base:core.range', () => {
   describe('commonAncestor', () => {
     var $cont;
     beforeAll(() => {
-      $cont = $('<div><span><b>b</b><u>u</u></span></div>');
+      $cont = $$('<div><span><b>b</b><u>u</u></span></div>');
     });
 
     it('should return <span> for <b>|b</b> and <u>u|</u>', () => {
@@ -78,7 +78,7 @@ describe('base:core.range', () => {
 
   describe('expand', () => {
     it('should return <b>|b</b> ~ <u>u|</u> for <b>|b</b> with isAnchor', () => {
-      var $cont = $('<div><a><b>b</b><u>u</u></a></div>');
+      var $cont = $$('<div><a><b>b</b><u>u</u></a></div>');
       var $anchor = $cont.find('a');
       var $b = $cont.find('b');
 
@@ -92,7 +92,7 @@ describe('base:core.range', () => {
 
   describe('collapse', () => {
     it('should return <u>u|</u> for <b>|b</b> ~ <u>u|</u>', () => {
-      var $cont = $('<div><b>b</b><u>u</u></div>');
+      var $cont = $$('<div><b>b</b><u>u</u></div>');
       var $b = $cont.find('b');
       var $u = $cont.find('u');
 
@@ -107,7 +107,7 @@ describe('base:core.range', () => {
   describe('normalize', () => {
     var $cont;
     beforeAll(() => {
-      $cont = $('<div><p><b>b</b><u>u</u><s>s</s></p></div>');
+      $cont = $$('<div><p><b>b</b><u>u</u><s>s</s></p></div>');
     });
 
     it('should return <b>|b</b> ~ <u>u|</u> for |<b>b</b> ~ <u>u</u>|', () => {
@@ -158,7 +158,7 @@ describe('base:core.range', () => {
 
   describe('normalize (block mode)', () => {
     it('should return <p>text</p><p>|<br></p> for <p>text</p><p>|<br></p>', () => {
-      var $cont = $('<div><p>text</p><p><br></p></div>');
+      var $cont = $$('<div><p>text</p><p><br></p></div>');
       var $p = $cont.find('p');
 
       var rng = range.create($p[1], 0, $p[1], 0).normalize();
@@ -169,7 +169,7 @@ describe('base:core.range', () => {
     });
 
     it('should return <p>text</p><p>|text</p> for <p>text</p><p>|text</p>', () => {
-      var $cont = $('<div><p>text</p><p>text</p></div>');
+      var $cont = $$('<div><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
       var rng = range.create($p[1], 0, $p[1], 0).normalize();
@@ -180,7 +180,7 @@ describe('base:core.range', () => {
     });
 
     it('should return <p>|text</p><p>text|</p> for |<p>text</p><p>text</p>|', () => {
-      var $cont = $('<div class="note-editable"><p>text</p><p>text</p></div>');
+      var $cont = $$('<div class="note-editable"><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
       var rng = range.create($cont[0], 0, $cont[0], 2).normalize();
@@ -193,7 +193,7 @@ describe('base:core.range', () => {
 
   describe('normalize (void element)', () => {
     it('should return <p><img>|<b>bold</b></p> for <p><img>|<b>bold</b></p>', () => {
-      var $cont = $('<div><p><img><b>bold</b></p></div>');
+      var $cont = $$('<div><p><img><b>bold</b></p></div>');
       var $p = $cont.find('p');
       var $b = $cont.find('b');
 
@@ -205,7 +205,7 @@ describe('base:core.range', () => {
     });
 
     it('should return <p><img>|text></p> for <p><img>|text></p>', () => {
-      var $cont = $('<div><p><img>bold</p></div>');
+      var $cont = $$('<div><p><img>bold</p></div>');
       var $img = $cont.find('img');
       var text = $img[0].nextSibling;
 
@@ -218,9 +218,9 @@ describe('base:core.range', () => {
 
   describe('insertNode', () => {
     it('should split paragraph when inserting a block element', () => {
-      var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      var $cont = $$('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
-      var $p2 = $('<p>p</p>');
+      var $p2 = $$('<p>p</p>');
 
       var rng = range.create($b[0].firstChild, 2, $b[0].firstChild, 2);
       rng.insertNode($p2[0]);
@@ -229,9 +229,9 @@ describe('base:core.range', () => {
     });
 
     it('should not split paragraph when inserting an inline element', () => {
-      var $cont = $('<div class="note-editable"><p>text</p></div>');
+      var $cont = $$('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
-      var $u = $('<u>u</u>');
+      var $u = $$('<u>u</u>');
 
       var rng = range.create($p[0].firstChild, 2, $p[0].firstChild, 2);
       rng.insertNode($u[0]);
@@ -239,9 +239,9 @@ describe('base:core.range', () => {
     });
 
     it('should not split paragraph when inserting an inline element case 2', () => {
-      var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      var $cont = $$('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
-      var $u = $('<u>u</u>');
+      var $u = $$('<u>u</u>');
 
       var rng = range.create($b[0].firstChild, 2, $b[0].firstChild, 2);
       rng.insertNode($u[0]);
@@ -251,7 +251,7 @@ describe('base:core.range', () => {
 
   describe('pasteHTML', () => {
     it('should not split a block element when inserting inline elements into it', () => {
-      var $cont = $('<div class="note-editable"><p>text</p></div>');
+      var $cont = $$('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
       var markup = '<span>span</span><i>italic</i>';
 
@@ -262,7 +262,7 @@ describe('base:core.range', () => {
     });
 
     it('should split an inline element when pasting inline elements into it', () => {
-      var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      var $cont = $$('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
       var markup = '<span>span</span><i>italic</i>';
 
@@ -273,7 +273,7 @@ describe('base:core.range', () => {
     });
 
     it('should split inline node when pasting an inline node and a block node into it', () => {
-      var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      var $cont = $$('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
       var markup = '<span>span</span><p><i>italic</i></p>';
 
@@ -287,7 +287,7 @@ describe('base:core.range', () => {
   describe('deleteContents', () => {
     var $cont, $b;
     beforeEach(() => {
-      $cont = $('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
+      $cont = $$('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
       $b = $cont.find('b');
     });
 
@@ -308,7 +308,7 @@ describe('base:core.range', () => {
 
   describe('wrapBodyInlineWithPara', () => {
     it('should insert an empty paragraph when there is no contents', () => {
-      var $cont = $('<div class="note-editable"></div>');
+      var $cont = $$('<div class="note-editable"></div>');
 
       var rng = range.create($cont[0], 0);
       rng.wrapBodyInlineWithPara();
@@ -317,7 +317,7 @@ describe('base:core.range', () => {
     });
 
     it('should wrap text with paragraph for text', () => {
-      var $cont = $('<div class="note-editable">text</div>');
+      var $cont = $$('<div class="note-editable">text</div>');
 
       var rng = range.create($cont[0].firstChild, 2);
       rng.wrapBodyInlineWithPara();
@@ -326,7 +326,7 @@ describe('base:core.range', () => {
     });
 
     it('should wrap an inline node with paragraph when selecting text in the inline node', () => {
-      var $cont = $('<div class="note-editable"><b>bold</b></div>');
+      var $cont = $$('<div class="note-editable"><b>bold</b></div>');
       var $b = $cont.find('b');
 
       var rng = range.create($b[0].firstChild, 2);
@@ -336,7 +336,7 @@ describe('base:core.range', () => {
     });
 
     it('should wrap inline nodes with paragraph when selecting text in the inline nodes', () => {
-      var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      var $cont = $$('<div class="note-editable"><b>b</b><i>i</i></div>');
 
       var rng = range.create($cont[0], 0);
       rng.wrapBodyInlineWithPara();
@@ -345,7 +345,7 @@ describe('base:core.range', () => {
     });
 
     it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #1', () => {
-      var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      var $cont = $$('<div class="note-editable"><b>b</b><i>i</i></div>');
 
       var rng = range.create($cont[0], 1);
       rng.wrapBodyInlineWithPara();
@@ -354,7 +354,7 @@ describe('base:core.range', () => {
     });
 
     it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #2', () => {
-      var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      var $cont = $$('<div class="note-editable"><b>b</b><i>i</i></div>');
 
       var rng = range.create($cont[0], 2);
       rng.wrapBodyInlineWithPara();
@@ -366,7 +366,7 @@ describe('base:core.range', () => {
   describe('getWordRange', () => {
     var $cont;
     beforeAll(() => {
-      $cont = $('<div class="note-editable">super simple wysiwyg editor</div>');
+      $cont = $$('<div class="note-editable">super simple wysiwyg editor</div>');
     });
 
     it('should return the range itself when there is no word before cursor', () => {
@@ -409,7 +409,7 @@ describe('base:core.range', () => {
   describe('getWordsRange', () => {
     var $cont;
     beforeAll(() => {
-      $cont = $('<div class="note-editable">super &nbsp; simple wysiwyg editor</div>');
+      $cont = $$('<div class="note-editable">super &nbsp; simple wysiwyg editor</div>');
     });
 
     it('should return the range itself when there is no word before cursor', () => {
@@ -452,7 +452,7 @@ describe('base:core.range', () => {
   describe('getWordsMatchRange', () => {
     var $cont, regex;
     beforeAll(() => {
-      $cont = $('<div class="note-editable">hi @Peter Pan. How are you?</div>');
+      $cont = $$('<div class="note-editable">hi @Peter Pan. How are you?</div>');
       regex = /@[a-z ]+/i;
     });
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import $ from 'jquery';
+import $$ from '@/js/core/dom-query.js';
 import lists from '@/js/core/lists';
 
 describe('base:core.lists', () => {
@@ -73,7 +73,7 @@ describe('base:core.lists', () => {
   describe('from', () => {
     it('should return an array of childNodes', () => {
       var $cont, $b, $u, $s, $i;
-      $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');

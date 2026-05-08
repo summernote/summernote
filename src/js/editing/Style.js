@@ -1,41 +1,47 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import func from '../core/func';
 import lists from '../core/lists';
 import dom from '../core/dom';
 
 export default class Style {
   /**
-   * @method jQueryCSS
-   *
-   * [workaround] for old jQuery
-   * passing an array of style properties to .css()
-   * will result in an object of property-value pairs.
-   * (compability with version < 1.9)
+   * Collect CSS property values from a node using native computed styles.
+   * Inline styles still win when the browser reports them directly.
    *
    * @private
-   * @param  {jQuery} $obj
+   * @param  {DomQuery|Element} node
    * @param  {Array} propertyNames - An array of one or more CSS properties.
    * @return {Object}
    */
-  jQueryCSS($obj, propertyNames) {
+  readStyleProperties(node, propertyNames) {
+    const target = node instanceof Element ? node : $$(node).get(0);
     const result = {};
-    $.each(propertyNames, (idx, propertyName) => {
-      result[propertyName] = $obj.css(propertyName);
+
+    if (!target) {
+      return result;
+    }
+
+    const computedStyle = getComputedStyle(target);
+    propertyNames.forEach((propertyName) => {
+      result[propertyName] = target.style.getPropertyValue(propertyName)
+        || computedStyle.getPropertyValue(propertyName);
     });
+
     return result;
   }
 
   /**
    * returns style object from node
    *
-   * @param {jQuery} $node
+   * @param {DomQuery|Element} $node
    * @return {Object}
    */
   fromNode($node) {
+    const node = $node instanceof Element ? $node : $$($node).get(0);
     const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
-    const styleInfo = this.jQueryCSS($node, properties) || {};
+    const styleInfo = this.readStyleProperties(node, properties);
 
-    const fontSize = $node[0].style.fontSize || styleInfo['font-size'];
+    const fontSize = node?.style.fontSize || styleInfo['font-size'] || '';
 
     styleInfo['font-size'] = parseInt(fontSize, 10);
     styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
@@ -50,10 +56,10 @@ export default class Style {
    * @param {Object} styleInfo
    */
   stylePara(rng, styleInfo) {
-    $.each(rng.nodes(dom.isPara, {
+    $$.each(rng.nodes(dom.isPara, {
       includeAncestor: true,
     }), (idx, para) => {
-      $(para).css(styleInfo);
+      $$(para).css(styleInfo);
     });
   }
 
@@ -98,7 +104,7 @@ export default class Style {
         const siblings = dom.withClosestSiblings(node, pred);
         const head = lists.head(siblings);
         const tails = lists.tail(siblings);
-        $.each(tails, (idx, elem) => {
+        $$.each(tails, (idx, elem) => {
           dom.appendChildNodes(head, elem.childNodes);
           dom.remove(elem);
         });
@@ -116,13 +122,13 @@ export default class Style {
    * @return {Object} - object contains style properties.
    */
   current(rng) {
-    const $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+    const $cont = $$(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
     let styleInfo = this.fromNode($cont);
 
     // document.queryCommandState for toggle state
     // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
     try {
-      styleInfo = $.extend(styleInfo, {
+      styleInfo = $$.extend(styleInfo, {
         'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
         'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
         'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
@@ -131,8 +137,8 @@ export default class Style {
         'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
         'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
       });
-    } catch (e) {
-      // eslint-disable-next-line
+    } catch {
+      // queryCommand APIs can throw in unsupported contexts.
     }
 
     // list-style-type to list-style(unordered, ordered)
@@ -145,11 +151,19 @@ export default class Style {
     }
 
     const para = dom.ancestor(rng.sc, dom.isPara);
-    if (para && para.style['line-height']) {
+    if (para && para.style.lineHeight) {
       styleInfo['line-height'] = para.style.lineHeight;
-    } else {
-      const lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
-      styleInfo['line-height'] = lineHeight.toFixed(1);
+    } else if (styleInfo['line-height'] && styleInfo['line-height'] !== 'normal') {
+      // styleInfo['line-height'] is already set from computed style
+      // Keep CSS keywords like "normal" as is
+      // Calculate ratio if it's a numeric value
+      const numValue = parseFloat(styleInfo['line-height']);
+      if (!Number.isNaN(numValue) && styleInfo['font-size']) {
+        const fontSize = parseInt(styleInfo['font-size'], 10);
+        if (fontSize > 0) {
+          styleInfo['line-height'] = (numValue / fontSize).toFixed(1);
+        }
+      }
     }
 
     styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);

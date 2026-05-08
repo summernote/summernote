@@ -1,20 +1,23 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 
 export default class Dropzone {
   constructor(context) {
     this.context = context;
-    this.$eventListener = $(document);
+    this.$eventListener = $$(document);
     this.$editor = context.layoutInfo.editor;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.documentEventHandlers = {};
 
-    this.$dropzone = $([
+    const dropzoneHtml = [
       '<div class="note-dropzone">',
         '<div class="note-dropzone-message"></div>',
       '</div>',
-    ].join('')).prependTo(this.$editor);
+    ].join('');
+    const dropzoneEl = $$.parseHTML(dropzoneHtml)[0];
+    this.$dropzone = $$(dropzoneEl);
+    this.$editor.prepend(this.$dropzone);
   }
 
   /**
@@ -38,7 +41,7 @@ export default class Dropzone {
    * attach Drag and Drop Events
    */
   attachDragAndDropEvent() {
-    let collection = $();
+    let collection = [];
     const $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
 
     this.documentEventHandlers.onDragenter = (e) => {
@@ -50,21 +53,23 @@ export default class Dropzone {
         this.$dropzone.height(this.$editor.height());
         $dropzoneMessage.text(this.lang.image.dragImageHere);
       }
-      collection = collection.add(e.target);
+      if (!collection.includes(e.target)) {
+        collection.push(e.target);
+      }
     };
 
     this.documentEventHandlers.onDragleave = (e) => {
-      collection = collection.not(e.target);
+      collection = collection.filter(t => t !== e.target);
 
       // If nodeName is BODY, then just make it over (fix for IE)
       if (!collection.length || e.target.nodeName === 'BODY') {
-        collection = $();
+        collection = [];
         this.$editor.removeClass('dragover');
       }
     };
 
     this.documentEventHandlers.onDrop = () => {
-      collection = $();
+      collection = [];
       this.$editor.removeClass('dragover');
     };
 
@@ -85,16 +90,16 @@ export default class Dropzone {
 
     // attach dropImage
     this.$dropzone.on('drop', (event) => {
-      const dataTransfer = event.originalEvent.dataTransfer;
+      const dataTransfer = event.dataTransfer;
 
       // stop the browser from opening the dropped content
       event.preventDefault();
 
       if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-        this.$editable.trigger('focus');
+        this.$editable.focus();
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
-        $.each(dataTransfer.types, (idx, type) => {
+        $$.each(dataTransfer.types, (idx, type) => {
           // skip moz-specific types
           if (type.toLowerCase().indexOf('_moz_') > -1) {
             return;
@@ -104,13 +109,14 @@ export default class Dropzone {
           if (type.toLowerCase().indexOf('text') > -1) {
             this.context.invoke('editor.pasteHTML', content);
           } else {
-            $(content).each((idx, item) => {
+            const nodes = $$.parseHTML(content);
+            nodes.forEach((item) => {
               this.context.invoke('editor.insertNode', item);
             });
           }
         });
       }
-    }).on('dragover', false); // prevent default dragover event
+    }).on('dragover', (e) => { e.preventDefault(); }); // prevent default dragover event
   }
 
   destroy() {

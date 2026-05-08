@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import lists from '../core/lists';
 import key from '../core/key';
 
@@ -43,9 +43,9 @@ export default class AutoLink {
       const urlText = this.options.showDomainOnlyForAutolink ?
         keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:xmpp?:?)?(?:www\.)?/i, '').split('/')[0]
         : keyword;
-      const node = $('<a></a>').html(urlText).attr('href', link)[0];
+      const node = $$('<a></a>').html(urlText).attr('href', link)[0];
       if (this.context.options.linkTargetBlank) {
-        $(node).attr('target', '_blank');
+        $$(node).attr('target', '_blank');
       }
 
       this.lastWordRange.insertNode(node);

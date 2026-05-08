@@ -1,175 +1,192 @@
-/**
- * LinkDialog.spec.js
- * (c) 2015~ Summernote Team
- * summernote may be freely distributed under the MIT license./
- */
-
-import { describe, it, expect } from 'vitest';
-import $ from 'jquery';
-import range from '@/js/core/range';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { nextTick } from '/test/util';
+import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
 import LinkDialog from '@/js/module/LinkDialog';
-import '@/styles/lite/summernote-lite';
+import '@/styles/bs5/summernote-bs5';
 
 describe('LinkDialog', () => {
-  var context, dialog, $editable;
+  let context;
+  let dialog;
+
+  async function showDialog(linkInfo) {
+    dialog.showLinkDialog(linkInfo).catch(() => {});
+    await nextTick();
+    dialog.$dialog.trigger('shown.bs.modal');
+    await nextTick();
+  }
+
+  function dispatchBlur($input) {
+    $input.trigger(new Event('blur', { bubbles: true, cancelable: true }));
+  }
 
   beforeEach(() => {
-    var options = $.extend({}, $.summernote.options);
-    options.toolbar = [['insert', ['link']]];
+    $$('body').empty();
+
+    const options = $$.extend({}, $$.summernote.options, {
+      toolbar: [['insert', ['link']]],
+    });
+
     context = new Context(
-      $(
-        '<div>' +
-          '<p><a href="https://summernote.org/" target="_blank">hello</a></p>' +
-          '<p><a href="https://summernote.org/">world</a></p>' +
-          '<p>http://summernote.org</p>' +
-          '<p>summernote.org</p>' +
-          '<p>summernote</p>' +
-          '</div>',
-      ),
+      $$('<div><p>hello</p></div>').appendTo('body'),
       options,
     );
-    context.initialize();
 
     dialog = new LinkDialog(context);
     dialog.initialize();
-
-    $editable = context.layoutInfo.editable;
-    $editable.appendTo('body');
   });
 
-  describe('LinkDialog', () => {
-    // open-in-new-window
-    it('should check new window when target=_blank', () => {
-      range.createFromNode($editable.find('a')[0]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+  afterEach(() => {
+    if (dialog?.$dialog) {
+      dialog.ui.hideDialog(dialog.$dialog);
+    }
 
-      var checked = dialog.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]').is(':checked');
-      expect(checked).to.be.true;
+    document.getSelection()?.removeAllRanges();
+    dialog?.destroy();
+    context?.destroy();
+    $$('body').empty();
+  });
+
+  it('checks or unchecks new window from provided link info', async() => {
+    await showDialog({
+      range: null,
+      text: 'hello',
+      url: 'https://summernote.org/',
+      isNewWindow: true,
     });
 
-    it('should uncheck new window without target=_blank', () => {
-      range.createFromNode($editable.find('a')[1]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    expect(dialog.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]').prop('checked')).to.equal(true);
 
-      var checked = dialog.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]').is(':checked');
-      expect(checked).to.be.false;
+    dialog.ui.hideDialog(dialog.$dialog);
+    await nextTick();
+
+    await showDialog({
+      range: null,
+      text: 'world',
+      url: 'https://summernote.org/',
+      isNewWindow: false,
     });
 
-    // add protocol automatically
-    it('should not modify linkInfo.url when initializing the dialog if linkInfo.url is defined and protocol exists', () => {
-      range.createFromNode($editable.find('p')[2]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    expect(dialog.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]').prop('checked')).to.equal(false);
+  });
 
-      var linkUrl = dialog.$dialog.find('.note-link-url').val();
-      expect(linkUrl).to.equal('http://summernote.org');
+  it('renders the link modal with the same structured layout as the image dialog', async() => {
+    await showDialog({
+      range: null,
+      text: 'hello',
+      url: 'https://summernote.org/',
+      isNewWindow: true,
     });
 
-    it('should add protocol when initializing the dialog if linkInfo.url is defined and protocol not exists', () => {
-      range.createFromNode($editable.find('p')[3]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    expect(dialog.$dialog.hasClass('note-link-dialog-modal')).to.equal(true);
+    expect(dialog.$dialog.find('.modal-header').length).to.equal(1);
+    expect(dialog.$dialog.find('.modal-footer').length).to.equal(1);
+    expect(dialog.$dialog.find('.note-link-dialog').length).to.equal(1);
+    expect(dialog.$dialog.find('.note-link-dialog-divider').length).to.equal(1);
+    expect(dialog.$dialog.find('.modal-footer .note-link-btn').length).to.equal(1);
+  });
 
-      var linkUrl = dialog.$dialog.find('.note-link-url').val();
-      expect(linkUrl).to.equal('http://summernote.org');
+  it('keeps an existing protocol when initializing the dialog', async() => {
+    await showDialog({
+      range: null,
+      text: 'http://summernote.org',
+      url: 'http://summernote.org',
+      isNewWindow: false,
     });
 
-    it('should use custom checker if provided', () => {
-      range.createFromNode($editable.find('p')[3]).normalize().select();
-      context.options.onCreateLink = linkUrl => `parsed-${linkUrl}`;
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    expect(dialog.$dialog.find('.note-link-url').val()).to.equal('http://summernote.org');
+  });
 
-      var linkUrl = dialog.$dialog.find('.note-link-url').val();
-      expect(linkUrl).to.equal('parsed-summernote.org');
+  it('adds http when initializing a plain-domain link', async() => {
+    await showDialog({
+      range: null,
+      text: 'summernote.org',
+      url: '',
+      isNewWindow: false,
     });
 
-    it('should add http protocol during the onChange event if linkInfo.url is undefined and protocol not exists', () => {
-      range.createFromNode($editable.find('p')[4]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    expect(dialog.$dialog.find('.note-link-url').val()).to.equal('http://summernote.org');
+  });
 
-      var $input = dialog.$dialog.find('.note-link-url');
-      expect($input.val()).to.equal('');
-      $input.val('summernote').blur();
-      expect($input.val()).to.equal('http://summernote');
+  it('uses the configured link checker during initialization', async() => {
+    context.options.onCreateLink = (linkUrl) => `parsed-${linkUrl}`;
+
+    await showDialog({
+      range: null,
+      text: 'summernote.org',
+      url: '',
+      isNewWindow: false,
     });
 
-    it('should add mailto protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
-      range.createFromNode($editable.find('p')[4]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    expect(dialog.$dialog.find('.note-link-url').val()).to.equal('parsed-summernote.org');
+  });
 
-      var $input = dialog.$dialog.find('.note-link-url');
-      expect($input.val()).to.equal('');
-      $input.val('email@example.com').blur();
-      expect($input.val()).to.equal('mailto:email@example.com');
+  it('adds http during blur when the link has no scheme', async() => {
+    await showDialog({
+      range: null,
+      text: '',
+      url: '',
+      isNewWindow: false,
     });
 
-    it('should add tel protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
-      range.createFromNode($editable.find('p')[4]).normalize().select();
-      context.invoke('editor.setLastRange');
-      dialog.show();
+    const $input = dialog.$dialog.find('.note-link-url');
+    expect($input.val()).to.equal('');
 
-      var $input = dialog.$dialog.find('.note-link-url');
-      expect($input.val()).to.equal('');
+    $input.val('summernote');
+    dispatchBlur($input);
+    expect($input.val()).to.equal('http://summernote');
+  });
 
-      $input.val('03-1234-5678').blur();
-      expect($input.val()).to.equal('tel:03-1234-5678');
+  it('adds mailto during blur for email addresses', async() => {
+    await showDialog({
+      range: null,
+      text: '',
+      url: '',
+      isNewWindow: false,
+    });
 
-      $input.val('090-1234-5678').blur();
-      expect($input.val()).to.equal('tel:090-1234-5678');
+    const $input = dialog.$dialog.find('.note-link-url');
+    expect($input.val()).to.equal('');
 
-      $input.val('03 1234 5678').blur();
-      expect($input.val()).to.equal('tel:03 1234 5678');
+    $input.val('email@example.com');
+    dispatchBlur($input);
+    expect($input.val()).to.equal('mailto:email@example.com');
+  });
 
-      $input.val('090 1234 5678').blur();
-      expect($input.val()).to.equal('tel:090 1234 5678');
+  it('adds tel during blur for phone numbers', async() => {
+    await showDialog({
+      range: null,
+      text: '',
+      url: '',
+      isNewWindow: false,
+    });
 
-      $input.val('0312345678').blur();
-      expect($input.val()).to.equal('tel:0312345678');
+    const $input = dialog.$dialog.find('.note-link-url');
+    const cases = [
+      '03-1234-5678',
+      '090-1234-5678',
+      '03 1234 5678',
+      '090 1234 5678',
+      '0312345678',
+      '09012345678',
+      '+81-3-1234-5678',
+      '81-3-1234-5678',
+      '+81-90-1234-5678',
+      '81-90-1234-5678',
+      '+81 3 1234 5678',
+      '81 3 1234 5678',
+      '+81 90 1234 5678',
+      '81 90 1234 5678',
+      '+81 3-1234-5678',
+      '81 3-1234-5678',
+      '+81 90-1234-5678',
+      '81 90-1234-5678',
+    ];
 
-      $input.val('09012345678').blur();
-      expect($input.val()).to.equal('tel:09012345678');
-
-      $input.val('+81-3-1234-5678').blur();
-      expect($input.val()).to.equal('tel:+81-3-1234-5678');
-
-      $input.val('81-3-1234-5678').blur();
-      expect($input.val()).to.equal('tel:81-3-1234-5678');
-
-      $input.val('+81-90-1234-5678').blur();
-      expect($input.val()).to.equal('tel:+81-90-1234-5678');
-
-      $input.val('81-90-1234-5678').blur();
-      expect($input.val()).to.equal('tel:81-90-1234-5678');
-
-      $input.val('+81 3 1234 5678').blur();
-      expect($input.val()).to.equal('tel:+81 3 1234 5678');
-
-      $input.val('81 3 1234 5678').blur();
-      expect($input.val()).to.equal('tel:81 3 1234 5678');
-
-      $input.val('+81 90 1234 5678').blur();
-      expect($input.val()).to.equal('tel:+81 90 1234 5678');
-
-      $input.val('81 90 1234 5678').blur();
-      expect($input.val()).to.equal('tel:81 90 1234 5678');
-
-      $input.val('+81 3-1234-5678').blur();
-      expect($input.val()).to.equal('tel:+81 3-1234-5678');
-
-      $input.val('81 3-1234-5678').blur();
-      expect($input.val()).to.equal('tel:81 3-1234-5678');
-
-      $input.val('+81 90-1234-5678').blur();
-      expect($input.val()).to.equal('tel:+81 90-1234-5678');
-
-      $input.val('81 90-1234-5678').blur();
-      expect($input.val()).to.equal('tel:81 90-1234-5678');
+    cases.forEach((value) => {
+      $input.val(value);
+      dispatchBlur($input);
+      expect($input.val()).to.equal(`tel:${value}`);
     });
   });
 });

@@ -1,37 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Airmode</title>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote - Air Mode</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-bs5.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-bs5.js"></script>
 
-  <!-- include jquery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="./index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Air Mode</li>
+        </ol>
+      </nav>
+      <h1 class="mt-3">Summernote Air Mode with Bootstrap 5 and Vanilla JS</h1>
+      <p class="page-copy">
+        This Bootstrap 5 example ports the legacy air mode demo to the vanilla <code>summernote.create()</code> API.
+        Select text inside the editor to open the floating inline toolbar. Switching to fullscreen temporarily uses
+        the regular toolbar and restores air mode when you leave fullscreen.
+      </p>
 
-  <!-- include libs stylesheets -->
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/umd/popper.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.js"></script>
+      <div class="row row-cols-1 row-cols-lg-2 g-3 my-3">
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <strong>How it works</strong>
+              <p class="mb-0 mt-2">There is no fixed toolbar. Highlight text to open the contextual air popover directly next to the selection.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <strong>Try these</strong>
+              <p class="mb-0 mt-2">Select a word, apply formatting, add a link, or insert a table without leaving the writing surface.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <!-- include summernote -->
-  <script type="module" src="/src/styles/bs4/summernote-bs4.js"></script>
+      <div class="card">
+        <div class="card-body">
+          <div id="airmode-editor">
+            <p>
+              In <a href="http://en.wikipedia.org/wiki/Computer_science" title="Computer science">computer science</a>,
+              <b>functional programming</b> is a
+              <a href="http://en.wikipedia.org/wiki/Programming_paradigm" title="Programming paradigm">programming paradigm</a>,
+              a style of building the structure and elements of computer programs, that treats
+              <a href="http://en.wikipedia.org/wiki/Computation" title="Computation">computation</a> as the evaluation of
+              <a href="http://en.wikipedia.org/wiki/Function_(mathematics)" title="Function (mathematics)">mathematical functions</a>
+              and avoids <a href="http://en.wikipedia.org/wiki/Program_state" title="Program state">state</a> and
+              <a href="http://en.wikipedia.org/wiki/Immutable_object" title="Immutable object">mutable</a> data.
+            </p>
+            <p>
+              Functional programming emphasizes
+              <a href="http://en.wikipedia.org/wiki/Function_(computer_science)" title="Function (computer science)">functions</a>
+              that produce results that depend only on their inputs and not on the program state&mdash;i.e.
+              <a href="http://en.wikipedia.org/wiki/Pure_function" title="Pure function">pure</a>
+              <a href="http://en.wikipedia.org/wiki/Function_(mathematics)" title="Function (mathematics)">mathematical functions</a>.
+              It is a <a href="http://en.wikipedia.org/wiki/Declarative_programming" title="Declarative programming">declarative programming</a>
+              paradigm, which means programming is done with
+              <a href="http://en.wikipedia.org/wiki/Expression_(computer_science)" title="Expression (computer science)">expressions</a>.
+            </p>
+            <p>
+              In functional code, the output value of a function depends only on the arguments that are input to the function,
+              so calling a function <i>f</i> twice with the same value for an argument <i>x</i> will produce the same result
+              <i>f(x)</i> both times. Eliminating
+              <a href="http://en.wikipedia.org/wiki/Side_effect_(computer_science)" title="Side effect (computer science)">side effects</a>,
+              i.e. changes in state that do not depend on the function inputs, can make it much easier to understand and predict
+              the behavior of a program.
+            </p>
+          </div>
+        </div>
+      </div>
 
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('.summernote').summernote({
-        tabsize: 2,
-        airMode: true
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Air Mode</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#airmode-editor', {
+  airMode: true,
+  airModeFullscreen: true,
+  dialogsInBody: true,
+  focus: true,
+  toolbar: [
+    ['font', ['bold', 'italic', 'underline', 'clear']],
+    ['color', ['color']],
+    ['para', ['ul', 'paragraph']],
+    ['table', ['table']],
+    ['insert', ['link', 'picture']],
+    ['view', ['codeview', 'fullscreen']],
+  ],
+  popover: {
+    air: [
+      ['font', ['bold', 'italic', 'underline', 'clear']],
+      ['color', ['color']],
+      ['para', ['ul', 'paragraph']],
+      ['table', ['table']],
+      ['insert', ['link', 'picture']],
+      ['view', ['codeview', 'fullscreen']],
+    ],
+  },
+});</code></pre>
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        summernote.create('#airmode-editor', {
+          airMode: true,
+          airModeFullscreen: true,
+          dialogsInBody: true,
+          focus: true,
+          toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            ['view', ['codeview', 'fullscreen']],
+          ],
+          popover: {
+            air: [
+              ['font', ['bold', 'italic', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture']],
+              ['view', ['codeview', 'fullscreen']],
+            ],
+          },
+        });
       });
-    });
-  </script>
-</head>
-<body>
-<div class="container">
-  <h1>Summernote in Airmode</h1>
-  <p><a href="https://summernote.org/examples/#air-mode">https://summernote.org/examples/#air-mode</a></p>
-  <div class="summernote">
-    <p>In <a href="http://en.wikipedia.org/wiki/Computer_science" title="Computer science">computer science</a>, <b>functional programming</b> is a <a href="http://en.wikipedia.org/wiki/Programming_paradigm" title="Programming paradigm">programming paradigm</a>, a style of building the structure and elements of computer programs, that treats <a href="http://en.wikipedia.org/wiki/Computation" title="Computation">computation</a> as the evaluation of <a href="http://en.wikipedia.org/wiki/Function_(mathematics)" title="Function (mathematics)">mathematical functions</a> and avoids <a href="http://en.wikipedia.org/wiki/Program_state" title="Program state" class="mw-redirect">state</a> and <a href="http://en.wikipedia.org/wiki/Immutable_object" title="Immutable object">mutable</a> data. Functional programming emphasizes <a href="http://en.wikipedia.org/wiki/Function_(computer_science)" title="Function (computer science)" class="mw-redirect">functions</a> that produce results that depend only on their inputs and not on the program state—i.e. <a href="http://en.wikipedia.org/wiki/Pure_function" title="Pure function">pure</a> <a href="http://en.wikipedia.org/wiki/Function_(mathematics)" title="Function (mathematics)">mathematical functions</a>. It is a <a href="http://en.wikipedia.org/wiki/Declarative_programming" title="Declarative programming">declarative programming</a> paradigm, which means programming is done with <a href="http://en.wikipedia.org/wiki/Expression_(computer_science)" title="Expression (computer science)">expressions</a>. In functional code, the output value of a function depends only on the arguments that are input to the function, so calling a function <i>f</i> twice with the same value for an argument <i>x</i> will produce the same result <i>f(x)</i> both times. Eliminating <a href="http://en.wikipedia.org/wiki/Side_effect_(computer_science)" title="Side effect (computer science)">side effects</a>, i.e. changes in state that do not depend on the function inputs, can make it much easier to understand and predict the behavior of a program, which is one of the key motivations for the development of functional programming.</p>
-  </div>
-</div>
-</body>
+    </script>
+  </body>
 </html>

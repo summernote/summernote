@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import externalGlobals from 'rollup-plugin-external-globals';
 import banner from 'vite-plugin-banner';
 import { readFileSync } from 'fs';
 import vitePostCSSSourceMap from './scripts/vite-plugins/vitePostCSSSourceMap.mjs';
@@ -22,10 +21,9 @@ Date: ${date}
 };
 
 const styles = [
-  'lite',
-  'bs3', 'bs4', 'bs5',
+  'bs5',
 ];
-const defaultStyle = 'lite';
+const defaultStyle = 'bs5';
 
 let configs = {};
 for (const style of styles) {
@@ -40,9 +38,6 @@ for (const style of styles) {
     },
 
     plugins: [
-      externalGlobals({
-        jquery: '$',
-      }),
       banner((fileName) => {
         if (fileName.endsWith('.min.js')) return banners['minimal'];
         if (fileName.endsWith('.js')) return banners['default'];
@@ -58,8 +53,11 @@ for (const style of styles) {
       },
     },
 
+    publicDir: false,
+
     build: {
       sourcemap: true,
+      outDir: 'dist',
 
       lib: {
         entry: `/src/styles/${style}/summernote-${style}.js`,
@@ -70,16 +68,12 @@ for (const style of styles) {
 
       rollupOptions: {
         external: (id) => {
-          if (id === 'jquery') return true; // do not bundle jQuery
           if (id.startsWith('./font/')) return true; // do not bundle font files
           return false;
         },
 
         output: {
           assetFileNames: `summernote-${style}.[ext]`,
-          globals: {
-            jquery: 'jQuery',
-          },
         },
       },
     },

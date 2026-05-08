@@ -5,16 +5,28 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import $ from 'jquery';
+import $$ from '@/js/core/dom-query.js';
 import range from '@/js/core/range';
 import Style from '@/js/editing/Style';
 
 describe('base:editing.Style', () => {
   var style = new Style();
 
+  describe('fromNode', () => {
+    it('reads style properties from a DomQuery node without legacy helpers', () => {
+      var $node = $$('<p style="font-size: 18px; text-align: center; line-height: 1.5;">Alpha</p>');
+      var styleInfo = style.fromNode($node);
+
+      expect(styleInfo['font-size']).to.equal(18);
+      expect(styleInfo['font-size-unit'][0]).to.equal('px');
+      expect(styleInfo['text-align']).to.equal('center');
+      expect(styleInfo['line-height']).to.equal('1.5');
+    });
+  });
+
   describe('styleNodes', () => {
     it('should wrap selected text with span', () => {
-      var $cont = $('<div class="note-editable"><p>text</p></div>');
+      var $cont = $$('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
       var rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
       style.styleNodes(rng);
@@ -23,7 +35,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should split text and wrap selected text with span', () => {
-      var $cont = $('<div class="note-editable"><p>text</p></div>');
+      var $cont = $$('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
       var rng = range.create($p[0].firstChild, 1, $p[0].firstChild, 3);
       style.styleNodes(rng);
@@ -32,7 +44,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should split text and insert span', () => {
-      var $cont = $('<div class="note-editable"><p>text</p></div>');
+      var $cont = $$('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
       var rng = range.create($p[0].firstChild, 2, $p[0].firstChild, 2);
       style.styleNodes(rng);
@@ -41,7 +53,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should just return a parent span', () => {
-      var $cont = $('<div class="note-editable"><p><span>text</span></p></div>');
+      var $cont = $$('<div class="note-editable"><p><span>text</span></p></div>');
       var $span = $cont.find('span');
       var rng = range.create($span[0].firstChild, 0, $span[0].firstChild, 4);
       style.styleNodes(rng);
@@ -50,7 +62,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should wrap each texts with span', () => {
-      var $cont = $('<div class="note-editable"><p><b>bold</b><span>span</span></p></div>');
+      var $cont = $$('<div class="note-editable"><p><b>bold</b><span>span</span></p></div>');
       var $b = $cont.find('b');
       var $span = $cont.find('span');
       var rng = range.create($b[0].firstChild, 2, $span[0].firstChild, 2);
@@ -60,7 +72,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should wrap each texts with span except not a single blood line', () => {
-      var $cont = $('<div class="note-editable"><p><b>bold</b><span>span</span></p></div>');
+      var $cont = $$('<div class="note-editable"><p><b>bold</b><span>span</span></p></div>');
       var $b = $cont.find('b');
       var $span = $cont.find('span');
       var rng = range.create($b[0].firstChild, 2, $span[0].firstChild, 4);
@@ -70,7 +82,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should expand b tag when providing the expandClosestSibling option', () => {
-      var $cont = $('<div class="note-editable"><p>text<b>bold</b></p></div>');
+      var $cont = $$('<div class="note-editable"><p>text<b>bold</b></p></div>');
       var $p = $cont.find('p');
       var rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
       style.styleNodes(rng, { nodeName: 'B', expandClosestSibling: true });
@@ -79,7 +91,7 @@ describe('base:editing.Style', () => {
     });
 
     it('should not expand b tag when providing the onlyPartialContains option', () => {
-      var $cont = $('<div class="note-editable"><p>text<b>bold</b></p></div>');
+      var $cont = $$('<div class="note-editable"><p>text<b>bold</b></p></div>');
       var $p = $cont.find('p');
       var rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
       style.styleNodes(rng, {

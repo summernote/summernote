@@ -1,10 +1,10 @@
-import $ from 'jquery';
+import $$ from './core/dom-query.js';
 
-$.summernote = $.summernote || {
+$$.summernote = $$.summernote || {
   lang: {},
 };
 
-$.extend(true, $.summernote.lang, {
+$$.extend(true, $$.summernote.lang, {
   'en-US': {
     font: {
       bold: 'Bold',
@@ -46,7 +46,16 @@ $.extend(true, $.summernote.lang, {
       video: 'Video',
       videoLink: 'Video Link',
       insert: 'Insert Video',
+      play: 'Play',
+      resizeFull: 'Resize full',
+      resizeHalf: 'Resize half',
+      resizeQuarter: 'Resize quarter',
+      resizeNone: 'Original size',
+      floatLeft: 'Float Left',
+      floatRight: 'Float Right',
+      floatNone: 'Remove float',
       url: 'Video URL',
+      remove: 'Remove Video',
       providers: '(YouTube, Google Drive, Vimeo, Vine, Instagram, DailyMotion, Youku, Peertube)',
     },
     link: {

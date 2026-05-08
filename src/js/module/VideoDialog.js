@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 import key from '../core/key';
 
@@ -6,8 +6,8 @@ export default class VideoDialog {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
-    this.$body = $(document.body);
+    this.ui = $$.summernote.ui;
+    this.$body = $$(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -105,40 +105,40 @@ export default class VideoDialog {
           start = parseInt(ytMatch[2], 10);
         }
       }
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
         .attr('width', '640').attr('height', '360');
     } else if (gdMatch && gdMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://drive.google.com/file/d/' + gdMatch[1] + '/preview')
         .attr('width', '640').attr('height', '480');
     } else if (igMatch && igMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://instagram.com/p/' + igMatch[2] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');
     } else if (vMatch && vMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', vMatch[0] + '/embed/simple')
         .attr('width', '600').attr('height', '600')
         .attr('class', 'vine-embed');
     } else if (vimMatch && vimMatch[3].length) {
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+      $video = $$('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
         .attr('width', '640').attr('height', '360');
     } else if (dmMatch && dmMatch[2].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
         .attr('width', '640').attr('height', '360');
     } else if (youkuMatch && youkuMatch[1].length) {
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+      $video = $$('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('height', '498')
         .attr('width', '510')
@@ -154,7 +154,7 @@ export default class VideoDialog {
       if (peerTubeMatch[5] !== 'undefined') autoplay = peerTubeMatch[5];
       var muted = 0;
       if (peerTubeMatch[6] !== 'undefined') muted = peerTubeMatch[6];
-      $video = $('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
+      $video = $$('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
         .attr('frameborder', 0)
         .attr('src', '//'+ peerTubeMatch[1] +'/videos/embed/' + peerTubeMatch[2]+"?loop="+loop
       +"&autoplay="+autoplay+"&muted="+muted +(begin > 0 ? '&start=' + begin : '')+(end > 0 ? '&end=' + start : ''))
@@ -162,17 +162,17 @@ export default class VideoDialog {
         .attr('height', '315');
     }else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
       const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+      $video = $$('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('height', '310')
         .attr('width', '500')
-        .attr('src', 'https://v.qq.com/txp/iframe/player.html?vid=' + vid + '&amp;auto=0');
+        .attr('src', 'https://v.qq.com/txp/iframe/player.html?vid=' + vid + '&auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
-      $video = $('<video controls>')
+      $video = $$('<video controls>')
         .attr('src', url)
         .attr('width', '640').attr('height', '360');
     } else if (fbMatch && fbMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560')
         .attr('width', '560').attr('height', '301')
@@ -203,7 +203,7 @@ export default class VideoDialog {
         // insert video node
         this.context.invoke('editor.insertNode', $node);
       }
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }
@@ -211,11 +211,11 @@ export default class VideoDialog {
   /**
    * show video dialog
    *
-   * @param {jQuery} $dialog
    * @return {Promise}
    */
   showVideoDialog(/* text */) {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
+      let isSettled = false;
       const $videoUrl = this.$dialog.find('.note-video-url');
       const $videoBtn = this.$dialog.find('.note-video-btn');
 
@@ -232,7 +232,8 @@ export default class VideoDialog {
 
         $videoBtn.on('click', (event) => {
           event.preventDefault();
-          deferred.resolve($videoUrl.val());
+          isSettled = true;
+          resolve($videoUrl.val());
         });
 
         this.bindEnterKey($videoUrl, $videoBtn);
@@ -242,8 +243,9 @@ export default class VideoDialog {
         $videoUrl.off();
         $videoBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
+        if (!isSettled) {
+          isSettled = true;
+          reject();
         }
       });
 

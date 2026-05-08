@@ -1,11 +1,11 @@
-import $ from 'jquery';
+import $$ from './core/dom-query.js';
 import func from './core/func';
 import lists from './core/lists';
 import dom from './core/dom';
 
 export default class Context {
   /**
-   * @param {jQuery} $note
+   * @param {DomQuery} $note
    * @param {Object} options
    */
   constructor($note, options) {
@@ -14,11 +14,13 @@ export default class Context {
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
-    this.options = $.extend(true, {}, options);
+    this.explicitContainer = options.container || null;
+    this.options = $$.extend(true, {}, options);
+    this.options.container = this.options.container || false;
 
     // init ui with options
-    $.summernote.ui = $.summernote.ui_template(this.options);
-    this.ui = $.summernote.ui;
+    $$.summernote.ui = $$.summernote.ui_template(this.options);
+    this.ui = $$.summernote.ui;
 
     this.initialize();
   }
@@ -28,9 +30,31 @@ export default class Context {
    */
   initialize() {
     this.layoutInfo = this.ui.createLayout(this.$note);
+    this.applyLayoutClassNames();
     this._initialize();
     this.$note.hide();
     return this;
+  }
+
+  normalizeClassNames(classNames) {
+    return typeof classNames === 'string'
+      ? classNames.split(/\s+/).filter(Boolean)
+      : [];
+  }
+
+  applyLayoutClassNames() {
+    [
+      ['editorClassName', this.layoutInfo.editor],
+      ['editingAreaClassName', this.layoutInfo.editingArea],
+      ['editableClassName', this.layoutInfo.editable],
+      ['codableClassName', this.layoutInfo.codable],
+      ['statusbarClassName', this.layoutInfo.statusbar],
+    ].forEach(([optionName, $node]) => {
+      const classNames = this.normalizeClassNames(this.options[optionName]);
+      if ($node && $node.length && classNames.length) {
+        $node.addClass(classNames.join(' '));
+      }
+    });
   }
 
   /**
@@ -40,6 +64,30 @@ export default class Context {
     this._destroy();
     this.$note.removeData('summernote');
     this.ui.removeLayout(this.$note, this.layoutInfo);
+  }
+
+  recreate(optionsOverrides = {}) {
+    const disabled = this.isDisabled();
+    const html = this.code();
+    const options = $$.extend(true, {}, this.options, optionsOverrides);
+
+    delete options.id;
+    options.container = this.explicitContainer;
+
+    this.destroy();
+    this.$note.html(html);
+
+    const context = new Context(this.$note, options);
+    this.$note.data('summernote', context);
+    context.triggerEvent('init', context.layoutInfo);
+
+    if (disabled) {
+      context.disable();
+    } else if (options.focus) {
+      context.invoke('editor.focus');
+    }
+
+    return context;
   }
 
   /**
@@ -58,31 +106,34 @@ export default class Context {
 
   _initialize() {
     // set own id
-    this.options.id = func.uniqueId($.now());
+    this.options.id = func.uniqueId(Date.now());
     // set default container for tooltips, popovers, and dialogs
     this.options.container = this.options.container || this.layoutInfo.editor;
 
     // add optional buttons
-    const buttons = $.extend({}, this.options.buttons);
-    Object.keys(buttons).forEach((key) => {
+    const buttons = $$.extend({}, this.options.buttons);
+    const buttonKeys = Object.keys(buttons);
+    buttonKeys.forEach((key) => {
       this.memo('button.' + key, buttons[key]);
     });
 
-    const modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
+    const modules = $$.extend({}, this.options.modules, $$.summernote.plugins || {});
+    const moduleKeys = Object.keys(modules);
 
     // add and initialize modules
-    Object.keys(modules).forEach((key) => {
+    moduleKeys.forEach((key) => {
       this.module(key, modules[key], true);
     });
 
-    Object.keys(this.modules).forEach((key) => {
+    moduleKeys.forEach((key) => {
       this.initializeModule(key);
     });
   }
 
   _destroy() {
     // destroy modules with reversed order
-    Object.keys(this.modules)
+    const moduleKeys = Object.keys(this.modules);
+    moduleKeys
       .reverse()
       .forEach((key) => {
         this.removeModule(key);
@@ -117,7 +168,7 @@ export default class Context {
   }
 
   enable() {
-    this.layoutInfo.editable.attr('contenteditable', true);
+    this.layoutInfo.editable.attr('contenteditable', 'true');
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
     this.options.editing = true;
@@ -128,7 +179,7 @@ export default class Context {
     if (this.invoke('codeview.isActivated')) {
       this.invoke('codeview.deactivate');
     }
-    this.layoutInfo.editable.attr('contenteditable', false);
+    this.layoutInfo.editable.attr('contenteditable', 'false');
     this.options.editing = false;
     this.invoke('toolbar.deactivate', true);
 
@@ -170,6 +221,7 @@ export default class Context {
     }
 
     this.modules[key] = new ModuleClass(this);
+    this.modules[key].shouldInitialize = this.modules[key].shouldInitialize || func.ok;
 
     if (!withoutIntialize) {
       this.initializeModule(key);
@@ -178,7 +230,8 @@ export default class Context {
 
   removeModule(key) {
     const module = this.modules[key];
-    if (module.shouldInitialize()) {
+    const shouldInitialize = module && typeof module.shouldInitialize === 'function' ? module.shouldInitialize() : true;
+    if (shouldInitialize) {
       if (module.events) {
         dom.detachEvents(this.$note, module.events);
       }
@@ -219,7 +272,7 @@ export default class Context {
   createInvokeHandler(namespace, value) {
     return (event) => {
       event.preventDefault();
-      const $target = $(event.target);
+      const $target = $$(event.target);
       this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
     };
   }
@@ -236,7 +289,7 @@ export default class Context {
     const module = this.modules[moduleName || 'editor'];
     if (!moduleName && this[methodName]) {
       return this[methodName].apply(this, args);
-    } else if (module && module[methodName] && module.shouldInitialize()) {
+    } else if (module && module[methodName] && (typeof module.shouldInitialize !== 'function' || module.shouldInitialize())) {
       return module[methodName].apply(module, args);
     }
   }

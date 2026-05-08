@@ -1,60 +1,6 @@
-# vim editing
-*.swp
-*.swo
-.tern-port
-.DS_Store
-
-# vscode editing
-.vscode
-
-# node modules
-npm-debug.log
-node_modules
-bower_components
-# node lock file
-package-lock.json
-
-*.sublime*
-.build*
-
-# zip file
-*.zip
-
-# webfont temp
-src/icons/dist/*
-
-.versions
-coverage/
-
-.idea/
-*.iml
-
-# NuGet
-build/
-
-#log files
-*.log
-
-# Ignoring dist folder content
-dist/*
-
-# Ignoring visual studio
-.vs
-
-# e2e tests
-selenium-server-standalone.jar
-test/reports/
-selenium-debug.log
-
-# Ignoring rpt2_cache
-.rpt2_cache
-
-# direnv
-.envrc
 .env
-
-# asdf
-.tool-versions
-
-# build files
-dist/
+.idea/
+.playwright-mcp/
+.tmp/
+node_modules
+*.zip

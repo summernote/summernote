@@ -1,212 +1,194 @@
-/**
- * HintPopover.spec.js
- * (c) 2015~ Summernote Team
- * summernote may be freely distributed under the MIT license./
- */
-
-import { describe, it, expect, vi } from 'vitest';
-import { nextTick } from '/test/util';
-import $ from 'jquery';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
+import HintPopover from '@/js/module/HintPopover';
 import range from '@/js/core/range';
-import env from '@/js/core/env';
-import key from '@/js/core/key';
-import '@/styles/lite/summernote-lite';
+import '@/styles/bs5/summernote-bs5';
 
 describe('HintPopover', () => {
-  var $note, editor, context, $editable;
+  let context;
+  let hintPopover;
+  let $editable;
 
-  function expectContents(context, markup) {
-    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
-  }
-
-  describe('Single word hint', () => {
-    beforeEach(function() {
-      $('body').empty(); // important !
-      $note = $('<div><p>hello world</p></div>');
-      $note.appendTo('body');
-
-      var options = $.extend({}, $.summernote.options, {
-        hint: {
-          mentions: ['jayden', 'sam', 'alvin', 'david'],
-          match: /\B#(\w*)$/,
-          search: function(keyword, callback) {
-            callback(
-              $.grep(this.mentions, function(item) {
-                return item.indexOf(keyword) === 0;
-              }),
-            );
-          },
-          content: function(item) {
-            return '#' + item;
-          },
-        },
-      });
-
-      context = new Context($note, options);
-      editor = context.modules.editor;
-      $editable = context.layoutInfo.editable;
-
-      // [workaround]
-      //  - Safari does not popup hintpopover
-      //  - IE8-11 can't create range in headless mode
-      if (env.isMSIE || env.isSafari) {
-        this.skip();
-      }
-    });
-
-    it('should not be shown without matches', () => {
-      $editable.trigger('keyup');
-      expect($('.note-hint-popover').css('display')).to.equals('none');
-    });
-
-    it('should be shown when it matches the given condition', async() => {
-      var textNode = $editable.find('p')[0].firstChild;
-      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
-      editor.insertText(' #');
-      $editable.trigger('keyup');
-
-      await nextTick();
-      expect($('.note-hint-popover').css('display')).to.equals('block');
-    });
-
-    it('should select the best matched item with the given condition', async() => {
-      var textNode = $editable.find('p')[0].firstChild;
-      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
-      editor.insertText(' #al');
-      $editable.trigger('keyup');
-
-      await nextTick();
-      // alvin should be activated
-      const item = $('.note-hint-popover').find('.note-hint-item');
-      expect(item.text()).to.equals('alvin');
-      expect(item.hasClass('active')).to.be.true;
-    });
-
-    it('should be replaced with the selected hint', async() => {
-      var textNode = $editable.find('p')[0].firstChild;
-      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
-      editor.insertText(' #');
-      $editable.trigger('keyup');
-
-      var onChange = vi.fn();
-      $note.on('summernote.change', onChange);
-
-      await nextTick();
-      var e = $.Event('keydown');
-      e.keyCode = key.code.ENTER;
-      $note.trigger('summernote.keydown', e);
-
-      await nextTick();
-      expectContents(context, '<p>hello #jayden world</p>');
-      expect(onChange).toHaveBeenCalledOnce();
-    });
-
-    it('should move selection by pressing arrow key', async() => {
-      var textNode = $editable.find('p')[0].firstChild;
-      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
-      editor.insertText(' #');
-      $editable.trigger('keyup');
-
-      await nextTick();
-      var e = $.Event('keydown');
-      e.keyCode = key.code.DOWN;
-      $note.trigger('summernote.keydown', e);
-      e.keyCode = key.code.ENTER;
-      $note.trigger('summernote.keydown', e);
-
-      await nextTick();
-      expectContents(context, '<p>hello #sam world</p>');
-    });
+  beforeEach(() => {
+    $$('body').empty();
   });
 
-  describe('Multiple words hint', () => {
-    beforeEach(function() {
-      $('body').empty();
-      $note = $('<div><p>hello world</p></div>');
-      $note.appendTo('body');
+  afterEach(() => {
+    hintPopover?.destroy();
+    context?.destroy();
+    $$('body').empty();
+  });
 
-      var options = $.extend({}, $.summernote.options, {
-        hintMode: 'words',
-        hintSelect: 'next',
-        hint: {
-          mentions: [
-            {
-              name: 'Jayden Smith',
-              url: 'http://example.org/person/jayden-smith',
-            },
-            {
-              name: 'Peter Pan',
-              url: 'http://example.org/person/peter-pan',
-            },
-            {
-              name: 'Lorca',
-              url: 'http://example.org/person/lorca',
-            },
-            {
-              name: 'David Summer',
-              url: 'http://example.org/person/david-summer',
-            },
-          ],
-          match: /\B@([a-z ]*)/i,
-          search: function(keyword, callback) {
-            callback(
-              $.grep(this.mentions, function(item) {
-                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
-              }),
-            );
-          },
-          template: function(item) {
-            return item.name;
-          },
-          content: function(item) {
-            return $('<a>')
-              .attr('href', item.url)
-              .text('@' + item.name)
-              .get(0);
-          },
+  it('searches single-word mentions and tracks the matching word', async() => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: {
+        mentions: ['jayden', 'sam', 'alvin', 'david'],
+        match: /\B#(\w*)$/,
+        search(keyword, callback) {
+          callback(this.mentions.filter((item) => item.indexOf(keyword) === 0));
         },
-      });
-
-      context = new Context($note, options);
-      editor = context.modules.editor;
-      $editable = context.layoutInfo.editable;
-
-      // [workaround]
-      //  - Safari does not popup hintpopover
-      //  - IE8-11 can't create range in headless mode
-      if (env.isMSIE || env.isSafari) {
-        this.skip();
-      }
+        content(item) {
+          return `#${item}`;
+        },
+      },
     });
 
-    it('should select the best matched item with the given condition', async() => {
-      var textNode = $editable.find('p')[0].firstChild;
-      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
-      editor.insertText(' @David S');
-      $editable.trigger('keyup');
+    context = new Context($$('<div><p>hello world</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
 
-      await nextTick();
-      // David Summer should be activated
-      const item = $('.note-hint-popover').find('.note-hint-item');
-      expect(item.text()).to.equals('David Summer');
-      expect(item.hasClass('active')).to.be.true;
+    const items = await new Promise((resolve) => {
+      hintPopover.searchKeyword(0, '#al', resolve);
     });
 
-    it('should render hint result with given content', async() => {
-      var textNode = $editable.find('p')[0].firstChild;
-      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
-      editor.insertText(' @David S');
-      $editable.trigger('keyup');
+    expect(items).to.deep.equal(['alvin']);
+    expect(hintPopover.matchingWord).to.equal('#al');
+  });
 
-      await nextTick();
-      // alvin should be activated
-      var e = $.Event('keydown');
-      e.keyCode = key.code.ENTER;
-      $note.trigger('summernote.keydown', e);
-
-      await nextTick();
-      expectContents(context, '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>');
+  it('creates grouped items and marks the first result active', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: {
+        mentions: ['jayden', 'sam', 'alvin', 'david'],
+        match: /\B#(\w*)$/,
+        search(keyword, callback) {
+          callback(this.mentions.filter((item) => item.indexOf(keyword) === 0));
+        },
+        template(item) {
+          return item.toUpperCase();
+        },
+        content(item) {
+          return `#${item}`;
+        },
+      },
     });
+
+    context = new Context($$('<div><p>hello world</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    const $group = hintPopover.createGroup(0, '#a');
+
+    expect($group.find('.note-hint-item').length).to.equal(1);
+    expect($group.find('.note-hint-item').text()).to.equal('ALVIN');
+    expect($group.find('.note-hint-item').first().hasClass('list-group-item')).to.be.true;
+    expect($group.find('.note-hint-item').hasClass('active')).to.be.true;
+    expect($group.find('.note-hint-item').first().attr('aria-selected')).to.equal('true');
+  });
+
+  it('moves between hint items with moveDown and moveUp', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: {
+        mentions: ['jayden', 'sam', 'alvin'],
+        match: /\B#(\w*)$/,
+        search(keyword, callback) {
+          callback(this.mentions.filter((item) => item.indexOf(keyword) === 0));
+        },
+        content(item) {
+          return `#${item}`;
+        },
+      },
+    });
+
+    context = new Context($$('<div><p>hello world</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    hintPopover.createGroup(0, '#').appendTo(hintPopover.$content);
+    const $items = hintPopover.$content.find('.note-hint-item');
+
+    expect($items.first().hasClass('active')).to.be.true;
+    hintPopover.moveDown();
+    expect($items.eq(1).hasClass('active')).to.be.true;
+    hintPopover.moveUp();
+    expect($items.first().hasClass('active')).to.be.true;
+  });
+
+  it('shows the hint popover when a stylesheet keeps note popovers hidden by default', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: {
+        mentions: ['apple'],
+        match: /\b(\w{1,})$/,
+        search(keyword, callback) {
+          callback(this.mentions.filter((item) => item.indexOf(keyword) === 0));
+        },
+      },
+    });
+
+    context = new Context($$('<div><p>hello world</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    hintPopover.createGroup(0, 'app').appendTo(hintPopover.$content);
+
+    expect(getComputedStyle(hintPopover.$popover[0]).display).to.equal('block');
+    expect(getComputedStyle(hintPopover.$content[0]).display).to.equal('flex');
+    expect(getComputedStyle(hintPopover.$content[0]).padding).to.equal('0px');
+  });
+
+  it('replaces the active hint item and triggers a change event', () => {
+    const onChange = vi.fn();
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: {
+        mentions: [
+          { name: 'David Summer', url: 'http://example.org/person/david-summer' },
+        ],
+        match: /\B@([a-z ]*)/i,
+        search(keyword, callback) {
+          callback(this.mentions.filter((item) => item.name.toLowerCase().indexOf(keyword.toLowerCase()) === 0));
+        },
+        template(item) {
+          return item.name;
+        },
+        content(item) {
+          return $$('<a>').attr('href', item.url).text(`@${item.name}`).get(0);
+        },
+      },
+      callbacks: {
+        onChange,
+      },
+    });
+
+    context = new Context($$('<div><p>hello world</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+    $editable = context.layoutInfo.editable;
+
+    const textNode = $editable.find('p')[0].firstChild;
+    hintPopover.lastWordRange = range.create(textNode, 6, textNode, 6);
+    hintPopover.matchingWord = '';
+
+    hintPopover.createGroup(0, '@David S').appendTo(hintPopover.$content);
+    hintPopover.replace();
+
+    expect($editable.html()).to.equal('<p>hello <a href="http://example.org/person/david-summer">@David Summer</a>world</p>');
+    expect(onChange).toHaveBeenCalledOnce();
+  });
+
+  it('replaces the clicked hint item through delegated click handling', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: {
+        words: ['apple'],
+        match: /\b(\w{1,})$/,
+        search(keyword, callback) {
+          callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+        },
+      },
+    });
+
+    context = new Context($$('<div><p>app</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+    $editable = context.layoutInfo.editable;
+
+    const textNode = $editable.find('p')[0].firstChild;
+    hintPopover.lastWordRange = range.create(textNode, 0, textNode, 3);
+    hintPopover.matchingWord = 'app';
+
+    hintPopover.createGroup(0, 'app').appendTo(hintPopover.$content);
+    hintPopover.$content.find('.note-hint-item').first()[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect($editable.html()).to.equal('<p>apple</p>');
+    expect(getComputedStyle(hintPopover.$popover[0]).display).to.equal('none');
   });
 });

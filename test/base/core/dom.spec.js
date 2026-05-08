@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import $ from 'jquery';
+import $$ from '@/js/core/dom-query.js';
 import dom from '@/js/core/dom';
 import func from '@/js/core/func';
 
@@ -8,7 +8,7 @@ describe('base:core.dom', () => {
     let $cont, $b, txtB;
     beforeAll(() => {
       // basic case
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       txtB = $b[0].firstChild;
     });
@@ -33,7 +33,7 @@ describe('base:core.dom', () => {
   describe('listAncestor', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><i><s><u><b>b</b></u></s></i></div>'); // busi
+      $cont = $$('<div class="note-editable"><i><s><u><b>b</b></u></s></i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -58,7 +58,7 @@ describe('base:core.dom', () => {
   describe('listDescendant', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><b></b><u></u><s></s><i></i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b></b><u></u><s></s><i></i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -80,7 +80,7 @@ describe('base:core.dom', () => {
   describe('commonAncestor', () => {
     let $cont, $span, $div, $b, $u, $s;
     beforeAll(() => {
-      $cont = $(
+      $cont = $$(
         '<div class="note-editable"><div><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></div></div>',
       );
       $span = $cont.find('span');
@@ -102,7 +102,7 @@ describe('base:core.dom', () => {
   describe('listNext', () => {
     let $cont, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $u = $cont.find('u');
       $s = $cont.find('s');
       $i = $cont.find('i');
@@ -124,7 +124,7 @@ describe('base:core.dom', () => {
   describe('listPrev', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -147,7 +147,7 @@ describe('base:core.dom', () => {
   describe('position', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -169,7 +169,7 @@ describe('base:core.dom', () => {
   describe('makeOffsetPath', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -204,7 +204,7 @@ describe('base:core.dom', () => {
   describe('fromOffsetPath', () => {
     let $cont, $b, $u, $s, $i;
     beforeAll(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -213,7 +213,7 @@ describe('base:core.dom', () => {
 
     it('should return the element by offsetPath', () => {
       let cont = $cont[0];
-      $.each([$b[0], $u[0], $s[0], $i[0]], (idx, node) => {
+      [$b[0], $u[0], $s[0], $i[0]].forEach((node) => {
         expect(dom.fromOffsetPath(cont, dom.makeOffsetPath(cont, node))).to.deep.equal(node);
         let child = node.firstChild;
         expect(dom.fromOffsetPath(cont, dom.makeOffsetPath(cont, child))).to.deep.equal(child);
@@ -224,7 +224,7 @@ describe('base:core.dom', () => {
   describe('splitTree', () => {
     let $para;
     beforeEach(() => {
-      let $busi = $('<div class="note-editable"><p><b>b</b><u>u</u><s>strike</s><i>i</i></p></div>'); // busi
+      let $busi = $$('<div class="note-editable"><p><b>b</b><u>u</u><s>strike</s><i>i</i></p></div>'); // busi
       $para = $busi.clone().find('p');
     });
 
@@ -318,7 +318,7 @@ describe('base:core.dom', () => {
       });
 
       it('should be split by span tag with offset 2 (1 depth and element case)', () => {
-        let $cont = $('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); // busi
+        let $cont = $$('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); // busi
         let $span = $cont.find('span');
         dom.splitTree($span[0], { node: $span[0], offset: 2 });
 
@@ -329,7 +329,7 @@ describe('base:core.dom', () => {
 
   describe('splitPoint', () => {
     it('should return rightNode and container for empty paragraph with inline', () => {
-      let $editable = $('<div class="note-editable"><p><br></p></div>');
+      let $editable = $$('<div class="note-editable"><p><br></p></div>');
       let $para = $editable.clone().find('p');
       let $br = $para.find('br');
 
@@ -340,7 +340,7 @@ describe('base:core.dom', () => {
 
   describe('isVisiblePoint', () => {
     it('should detect as visible when there is a table inside a div', () => {
-      let $editable = $('<div><table></table></div>');
+      let $editable = $$('<div><table></table></div>');
       let $point = $editable.clone().find('div');
 
       let result = dom.isVisiblePoint($point);

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+// Native DOM/JS utility helpers.
 
 /**
  * @class core.func
@@ -88,7 +88,6 @@ function uniqueId(prefix) {
  * @return {Number} bounds.height
  */
 function rect2bnd(rect) {
-  const $document = $(document);
   if (!rect) {
     return {
       top: 0,
@@ -99,8 +98,8 @@ function rect2bnd(rect) {
   }
 
   return {
-    top: rect.top + $document.scrollTop(),
-    left: rect.left + $document.scrollLeft(),
+    top: rect.top + window.scrollY,
+    left: rect.left + window.scrollX,
     width: rect.right - rect.left,
     height: rect.bottom - rect.top,
   };

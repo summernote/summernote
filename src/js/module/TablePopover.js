@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 import lists from '../core/lists';
 import dom from '../core/dom';
@@ -7,7 +7,7 @@ export default class TablePopover {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
+    this.ui = $$.summernote.ui;
     this.options = context.options;
     this.events = {
       'summernote.mousedown': (we, event) => {
@@ -41,7 +41,9 @@ export default class TablePopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
-    this.context.invoke('buttons.build', $content, this.options.popover.table);
+    this.context.invoke('buttons.build', $content, this.options.popover.table, {
+      classPrefix: 'popover',
+    });
 
     // [workaround] Disable Firefox's default table editor
     if (env.isFF) {
@@ -55,18 +57,32 @@ export default class TablePopover {
     this.$popover.remove();
   }
 
+  applyPlacementStyles() {
+    this.$popover.attr('data-popper-placement', 'bottom');
+  }
+
   update(target) {
     if (this.context.isDisabled()) {
       return false;
     }
 
-    const isCell = dom.isCell(target) || dom.isCell(target?.parentElement);
+    if (dom.isImg(target) || dom.ancestor(target, dom.isImg)) {
+      this.hide();
+      return false;
+    }
+
+    const cell = dom.isCell(target) ? target : dom.ancestor(target, dom.isCell);
+    const isCell = !!cell;
 
     if (isCell) {
-      const pos = dom.posFromPlaceholder(target);
-      const containerOffset = $(this.options.container).offset();
+      this.context.invoke('editor.saveTarget', cell);
+
+      const pos = dom.posFromPlaceholder(cell);
+      const containerOffset = $$(this.options.container).offset();
       pos.top -= containerOffset.top;
       pos.left -= containerOffset.left;
+
+      this.applyPlacementStyles();
 
       this.$popover.css({
         display: 'block',

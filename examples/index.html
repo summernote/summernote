@@ -1,149 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summernote Examples</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 10px;
-        }
-        a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <h1>Summernote Examples</h1>
-    <ul id="example-list">
-        <!-- Example links will be dynamically inserted here -->
-    </ul>
+    <title>Summernote - Examples Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <script type="module" src="/assets/examples.js"></script>
+  </head>
+  <body>
+    <main class="page">
 
-    <script>
-        // List of example HTML files (you may need to update this list manually)
-        const examples = [
-            {
-                title: 'Air Mode',
-                href: 'airmode.html'
-            },
-            {
-                title: 'CodeMirror',
-                href: 'codemirror.html'
-            },
-            {
-                title: 'Custom Style',
-                href: 'custom-style.html'
-            },
-            {
-                title: 'External API',
-                href: 'external-api.html'
-            },
-            {
-                title: 'External CodeMirror',
-                href: 'external-codemirror.html'
-            },
-            {
-                title: 'Hint Emoji',
-                href: 'hint-emoji.html'
-            },
-            {
-                title: 'Hint Math',
-                href: 'hint-math.html'
-            },
-            {
-                title: 'Hint User Define',
-                href: 'hint-userdefine.html'
-            },
-            {
-                title: 'Hint Words',
-                href: 'hint-words.html'
-            },
-            {
-                title: 'History Limit',
-                href: 'history-limit.html'
-            },
-            {
-                title: 'jQuery Custom Event',
-                href: 'jquery-custom-event.html'
-            },
-            {
-                title: 'Language',
-                href: 'lang.html'
-            },
-            {
-                title: 'Link Blank',
-                href: 'link-blank.html'
-            },
-            {
-                title: 'Mode Switcher',
-                href: 'mode-switcher.html'
-            },
-            {
-                title: 'On Dialog (Multi-tab)',
-                href: 'ondialog-multitab.html'
-            },
-            {
-                title: 'On Dialog',
-                href: 'ondialog.html'
-            },
-            {
-                title: 'Placeholder',
-                href: 'placeholder.html'
-            },
-            {
-                title: 'Plugin Hello',
-                href: 'plugin-hello.html'
-            },
-            {
-                title: 'Record Every Keystroke',
-                href: 'recordEveryKeyStroke.html'
-            },
-            {
-                title: 'Textarea',
-                href: 'textarea.html'
-            },
-            {
-                title: 'Toolbar Container',
-                href: 'toolbar-container.html'
-            },
-            {
-                title: 'With Google Font',
-                href: 'with-google-font.html'
-            }
-            // Add more example files as needed
-            
-        ];
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item active" aria-current="page">Examples overview</li>
+        </ol>
+      </nav>
 
-        const exampleList = document.getElementById('example-list');
+      <h1 class="mt-3">Summernote Bootstrap 5 example pages</h1>
 
-        examples.forEach(example => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = example.href;
-            a.textContent = example.title;
-            li.appendChild(a);
-            exampleList.appendChild(li);
-        });
-    </script>
-</body>
+      <p class="page-copy">
+        These are the currently available public example pages in this build. Each page uses the compiled Bootstrap 5
+        assets and focuses on a specific setup.
+      </p>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-3">
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Default</h2>
+              <p class="mb-3 text-secondary">The recommended baseline example with the standard Bootstrap 5 toolbar.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./default.html">Open Default</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">All Features</h2>
+              <p class="mb-3 text-secondary">A broader toolbar setup with more formatting, media, history, and dialog features.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./full.html">Open All Features</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Toolbar Colors</h2>
+              <p class="mb-3 text-secondary">Shows how to apply Bootstrap utility and button classes to the toolbar without changing the default editor layout.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./toolbar-colors.html">Open Toolbar Colors</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Bootswatch Themes</h2>
+              <p class="mb-3 text-secondary">Switch between all public Bootswatch 5.3.8 themes to compare how the editor inherits card edges, colors, and chrome.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./bootswatch.html">Open Bootswatch Themes</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Air Mode</h2>
+              <p class="mb-3 text-secondary">Inline editing with the floating air popover and fullscreen switching support.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./airmode.html">Open Air Mode</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <p class="mt-5">
+        <a href="initialization-options">Initialization options</a>,
+        <a href="basic-api">Basic API</a>,
+        <a href="font-style-api">Font Style API</a>,
+        <a href="paragraph-api">Paragraph API</a>,
+        <a href="insertion-api">Insertion API</a>,
+        <a href="range-selection-api">Range &amp; Selection API</a>,
+        <a href="callbacks">Callbacks</a>,
+        <a href="custom-button">Custom Buttons</a>,
+        <a href="custom-icons">Custom Icons</a>,
+        <a href="module-system">Module System</a>,
+        <a href="modules">Modules</a>
+      </p>
+    </main>
+  </body>
 </html>
-

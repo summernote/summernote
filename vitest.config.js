@@ -1,4 +1,13 @@
 import { defineConfig } from 'vitest/config';
+import { playwright } from '@vitest/browser-playwright';
+import { chromium } from 'playwright';
+
+const chromeArgs = [
+  '--no-sandbox',
+  '--disable-setuid-sandbox',
+  '--disable-dev-shm-usage',
+  '--disable-gpu',
+];
 
 export default defineConfig({
   resolve: {
@@ -15,8 +24,18 @@ export default defineConfig({
 
     browser: {
       enabled: true,
-      headless: true,
-      name: 'chrome',
+      instances: [
+        {
+          browser: 'chromium',
+          headless: true,
+          provider: playwright({
+            launchOptions: {
+              args: chromeArgs,
+              executablePath: process.env.CHROME_BIN || chromium.executablePath(),
+            },
+          }),
+        },
+      ],
     },
   },
 });

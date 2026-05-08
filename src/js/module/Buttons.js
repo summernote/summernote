@@ -1,17 +1,28 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import func from '../core/func';
 import lists from '../core/lists';
 import env from '../core/env';
 
+const BOOTSTRAP_BUTTON_SIZE_CLASSES = new Set(['btn-sm', 'btn-lg']);
+const BOOTSTRAP_BUTTON_GROUP_SIZE_CLASSES = new Set(['btn-group-sm', 'btn-group-lg']);
+const BOOTSTRAP_BUTTON_STYLE_CLASS_PATTERN = /^btn(?:-outline)?-[a-z0-9-]+$/;
+
 export default class Buttons {
   constructor(context) {
-    this.ui = $.summernote.ui;
+    this.ui = $$.summernote.ui;
     this.context = context;
     this.$toolbar = context.layoutInfo.toolbar;
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.invertedKeyMap = func.invertObject(
-      this.options.keyMap[env.isMac ? 'mac' : 'pc']
+      this.options.keyMap[env.isMac ? 'mac' : 'pc'],
+    );
+    this.fontInstalledMap = new Map();
+    this.fontNamesIgnoreCheck = new Set(
+      this.options.fontNamesIgnoreCheck.map((name) => name.toLowerCase()),
+    );
+    this.supportedStyleTags = new Set(
+      this.options.styleTags.map((styleTag) => this.getStyleTagValue(styleTag).toLowerCase()),
     );
   }
 
@@ -44,26 +55,133 @@ export default class Buttons {
   initialize() {
     this.addToolbarButtons();
     this.addImagePopoverButtons();
+    this.addVideoPopoverButtons();
     this.addLinkPopoverButtons();
     this.addTablePopoverButtons();
-    this.fontInstalledMap = {};
   }
 
   destroy() {
-    delete this.fontInstalledMap;
+    this.fontInstalledMap.clear();
+    this.fontNamesIgnoreCheck.clear();
+    this.supportedStyleTags.clear();
   }
 
   isFontInstalled(name) {
-    if (!Object.prototype.hasOwnProperty.call(this.fontInstalledMap, name)) {
-      this.fontInstalledMap[name] = env.isFontInstalled(name) ||
-        lists.contains(this.options.fontNamesIgnoreCheck, name);
+    const normalizedName = name.toLowerCase();
+    if (!this.fontInstalledMap.has(normalizedName)) {
+      this.fontInstalledMap.set(
+        normalizedName,
+        env.isFontInstalled(name) || this.fontNamesIgnoreCheck.has(normalizedName),
+      );
     }
-    return this.fontInstalledMap[name];
+    return this.fontInstalledMap.get(normalizedName);
   }
 
   isFontDeservedToAdd(name) {
     name = name.toLowerCase();
     return (name !== '' && this.isFontInstalled(name) && env.genericFontFamilies.indexOf(name) === -1);
+  }
+
+  getStyleTagValue(styleTag) {
+    if (typeof styleTag === 'string') {
+      return styleTag;
+    }
+
+    return styleTag.value || styleTag.tag || '';
+  }
+
+  getCurrentStyleTag(styleInfo) {
+    const currentStyleNode = (styleInfo.ancestors || []).find((node) => {
+      return this.supportedStyleTags.has(node.nodeName.toLowerCase());
+    });
+
+    return currentStyleNode ? currentStyleNode.nodeName.toLowerCase() : null;
+  }
+
+  normalizeLineHeight(value) {
+    const numericValue = parseFloat(value);
+    return Number.isNaN(numericValue) ? (value + '') : numericValue.toFixed(1);
+  }
+
+  normalizeFontFamilyName(name) {
+    return name.replace(/[\'\"]/g, '').trim();
+  }
+
+  normalizeClassNames(classNames) {
+    return typeof classNames === 'string'
+      ? classNames.split(/\s+/).filter(Boolean)
+      : [];
+  }
+
+  isBootstrapButtonStyleClass(className) {
+    return className !== 'btn' &&
+      BOOTSTRAP_BUTTON_STYLE_CLASS_PATTERN.test(className) &&
+      !BOOTSTRAP_BUTTON_SIZE_CLASSES.has(className);
+  }
+
+  applyContainerButtonClassNames($container, classPrefix) {
+    const containerClassNames = this.normalizeClassNames(this.options[`${classPrefix}ClassName`]);
+    const buttonClassNames = this.normalizeClassNames(this.options[`${classPrefix}ButtonClassName`]);
+    const groupClassNames = this.normalizeClassNames(this.options[`${classPrefix}ButtonGroupClassName`]);
+    const useNativeButtonGroups = Boolean(this.options[`${classPrefix}UseNativeButtonGroups`]);
+    const shouldDropDefaultButtonSize = useNativeButtonGroups ||
+      groupClassNames.some((className) => BOOTSTRAP_BUTTON_GROUP_SIZE_CLASSES.has(className));
+
+    const $targetContainer = classPrefix === 'popover'
+      ? $container.closest('.note-popover').length ? $container.closest('.note-popover') : $container
+      : $container;
+
+    if (containerClassNames.length) {
+      $targetContainer.addClass(containerClassNames.join(' '));
+      if (classPrefix === 'popover') {
+        $container.addClass(containerClassNames.join(' '));
+      }
+    }
+
+    const $buttonGroups = $container.children('.note-btn-group');
+    if (useNativeButtonGroups) {
+      $container.addClass('btn-toolbar');
+      $buttonGroups.attr('role', 'group');
+    }
+    if (groupClassNames.length) {
+      $buttonGroups.addClass(groupClassNames.join(' '));
+    }
+
+    if (!buttonClassNames.length && !shouldDropDefaultButtonSize) {
+      return;
+    }
+
+    const customSizeClassNames = buttonClassNames.filter((className) => BOOTSTRAP_BUTTON_SIZE_CLASSES.has(className));
+    const customStyleClassNames = buttonClassNames.filter((className) => this.isBootstrapButtonStyleClass(className));
+
+    $container.find('.note-btn').each((_, button) => {
+      const classNames = Array.from(button.classList);
+
+      if (customStyleClassNames.length) {
+        const styleClassNames = classNames.filter((className) => this.isBootstrapButtonStyleClass(className));
+        if (styleClassNames.length) {
+          button.classList.remove(...styleClassNames);
+        }
+      }
+
+      if (customSizeClassNames.length || shouldDropDefaultButtonSize) {
+        const sizeClassNames = classNames.filter((className) => BOOTSTRAP_BUTTON_SIZE_CLASSES.has(className));
+        if (sizeClassNames.length) {
+          button.classList.remove(...sizeClassNames);
+        }
+      }
+
+      if (buttonClassNames.length) {
+        button.classList.add(...buttonClassNames);
+      }
+    });
+  }
+
+  updateDropdownChecks($container, selector, predicate) {
+    $container.find(selector).each((idx, item) => {
+      const $item = $$(item);
+      $item.toggleClass('checked', predicate($item));
+    });
   }
 
   colorPalette(className, tooltip, backColor, foreColor) {
@@ -75,7 +193,7 @@ export default class Buttons {
           contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
           tooltip: tooltip,
           click: (event) => {
-            const $button = $(event.currentTarget);
+            const $button = $$(event.currentTarget);
             if (backColor && foreColor) {
               this.context.invoke('editor.color', {
                 backColor: $button.attr('data-backColor'),
@@ -152,7 +270,7 @@ export default class Buttons {
           ].join('') : ''),
           callback: ($dropdown) => {
             $dropdown.find('.note-holder').each((idx, item) => {
-              const $holder = $(item);
+              const $holder = $$(item);
               $holder.append(this.ui.palette({
                 colors: this.options.colors,
                 colorsName: this.options.colorsName,
@@ -166,7 +284,7 @@ export default class Buttons {
               ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
             ];
             $dropdown.find('.note-holder-custom').each((idx, item) => {
-              const $holder = $(item);
+              const $holder = $$(item);
               $holder.append(this.ui.palette({
                 colors: customColors,
                 colorsName: customColors,
@@ -176,28 +294,27 @@ export default class Buttons {
               }).render());
             });
             $dropdown.find('input[type=color]').each((idx, item) => {
-              $(item).on("change", function() {
-                const $chip = $dropdown.find('#' + $(this).data('event')).find('.note-color-btn').first();
+              $$(item).on("change", function() {
+                const $chip = $dropdown.find('#' + $$(this).data('event')).find('.note-color-btn').first();
                 const color = this.value.toUpperCase();
                 $chip.css('background-color', color)
+                  .attr('title', color)
                   .attr('aria-label', color)
                   .attr('data-value', color)
-                  .attr('data-original-title', color);
+                  .attr('data-bs-original-title', color);
                 $chip.trigger('click');
               });
             });
           },
           click: (event) => {
-            event.stopPropagation();
-
-            const $parent = $('.' + className).find('.note-dropdown-menu');
-            const $button = $(event.target);
+            const $parent = $$('.' + className).find('.note-dropdown-menu');
+            const $button = $$(event.target);
             const eventName = $button.data('event');
             const value = $button.attr('data-value');
 
             if (eventName === 'openPalette') {
               const $picker = $parent.find('#' + value);
-              const $palette = $($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
+              const $palette = $$($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
 
               // Shift palette chips
               const $chip = $palette.find('.note-color-btn').last().detach();
@@ -205,9 +322,10 @@ export default class Buttons {
               // Set chip attributes
               const color = $picker.val();
               $chip.css('background-color', color)
+                .attr('title', color)
                 .attr('aria-label', color)
                 .attr('data-value', color)
-                .attr('data-original-title', color);
+                .attr('data-bs-original-title', color);
               $palette.prepend($chip);
               $picker.trigger('click');
             } else {
@@ -233,15 +351,16 @@ export default class Buttons {
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(
-            this.ui.icon(this.options.icons.magic), this.options
+            this.ui.icon(this.options.icons.magic), this.options,
           ),
           tooltip: this.lang.style.style,
           data: {
             toggle: 'dropdown',
           },
         }),
-        this.ui.dropdown({
+        this.ui.dropdownCheck({
           className: 'dropdown-style',
+          checkClassName: this.options.icons.menuCheck,
           items: this.options.styleTags,
           title: this.lang.style.style,
           template: (item) => {
@@ -260,7 +379,7 @@ export default class Buttons {
 
             return '<' + tag + style + className + '>' + title + '</' + tag + '>';
           },
-          click: this.context.createInvokeHandler('editor.formatBlock'),
+          click: this.context.createInvokeHandlerAndUpdateState('editor.formatBlock'),
         }),
       ]).render();
     });
@@ -345,7 +464,7 @@ export default class Buttons {
 
       if (this.options.addDefaultFonts) {
         // Add 'default' fonts into the fontnames array if not exist
-        $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
+        $$.each(styleInfo['font-family'].split(','), (idx, fontname) => {
           fontname = fontname.trim().replace(/['"]+/g, '');
           if (this.isFontDeservedToAdd(fontname)) {
             if (this.options.fontNames.indexOf(fontname) === -1) {
@@ -359,7 +478,7 @@ export default class Buttons {
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(
-            '<span class="note-current-fontname"></span>', this.options
+            '<span class="note-current-fontname"></span>', this.options,
           ),
           tooltip: this.lang.font.name,
           data: {
@@ -528,7 +647,7 @@ export default class Buttons {
           checkClassName: this.options.icons.menuCheck,
           className: 'dropdown-line-height',
           title: this.lang.font.height,
-          click: this.context.createInvokeHandler('editor.lineHeight'),
+          click: this.context.createInvokeHandlerAndUpdateState('editor.lineHeight'),
         }),
       ]).render();
     });
@@ -554,14 +673,23 @@ export default class Buttons {
             '</div>',
             '<div class="note-dimension-display">1 x 1</div>',
           ].join(''),
-        }),
-      ], {
+        })], {
         callback: ($node) => {
           const $catcher = $node.find('.note-dimension-picker-mousecatcher');
-          $catcher.css({
-            width: this.options.insertTableMaxSize.col + 'em',
-            height: this.options.insertTableMaxSize.row + 'em',
-          }).on('mouseup', this.context.createInvokeHandler('editor.insertTable'))
+          const insertTable = (event) => {
+            event.preventDefault();
+            this.context.invoke('editor.restoreRange');
+            this.context.invoke('editor.insertTable', $$(event.currentTarget).data('value'));
+          };
+          $catcher
+            .css({
+              width: this.options.insertTableMaxSize.col + 'em',
+              height: this.options.insertTableMaxSize.row + 'em',
+            })
+            .on('mousedown', (event) => {
+              event.preventDefault();
+            })
+            .on('mouseup', insertTable)
             .on('mousemove', this.tableMoveHandler.bind(this));
         },
       }).render();
@@ -733,6 +861,80 @@ export default class Buttons {
     });
   }
 
+  addVideoPopoverButtons() {
+    this.context.memo('button.resizeFullVideo', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">100%</span>',
+        tooltip: this.lang.video.resizeFull,
+        click: this.context.createInvokeHandler('editor.resize', '1'),
+      }).render();
+    });
+
+    this.context.memo('button.resizeHalfVideo', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">50%</span>',
+        tooltip: this.lang.video.resizeHalf,
+        click: this.context.createInvokeHandler('editor.resize', '0.5'),
+      }).render();
+    });
+
+    this.context.memo('button.resizeQuarterVideo', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">25%</span>',
+        tooltip: this.lang.video.resizeQuarter,
+        click: this.context.createInvokeHandler('editor.resize', '0.25'),
+      }).render();
+    });
+
+    this.context.memo('button.resizeNoneVideo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.rollback),
+        tooltip: this.lang.video.resizeNone,
+        click: this.context.createInvokeHandler('editor.resize', '0'),
+      }).render();
+    });
+
+    this.context.memo('button.floatLeftVideo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.floatLeft),
+        tooltip: this.lang.video.floatLeft,
+        click: this.context.createInvokeHandler('editor.floatMe', 'left'),
+      }).render();
+    });
+
+    this.context.memo('button.floatRightVideo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.floatRight),
+        tooltip: this.lang.video.floatRight,
+        click: this.context.createInvokeHandler('editor.floatMe', 'right'),
+      }).render();
+    });
+
+    this.context.memo('button.floatNoneVideo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.rollback),
+        tooltip: this.lang.video.floatNone,
+        click: this.context.createInvokeHandler('editor.floatMe', 'none'),
+      }).render();
+    });
+
+    this.context.memo('button.removeVideo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.trash),
+        tooltip: this.lang.video.remove,
+        click: this.context.createInvokeHandler('editor.removeMedia'),
+      }).render();
+    });
+
+    this.context.memo('button.playMedia', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">Play</span>',
+        tooltip: this.lang.video.play,
+        click: this.context.createInvokeHandler('editor.playMedia'),
+      }).render();
+    });
+  }
+
   /**
    * table : [
    *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
@@ -798,7 +1000,7 @@ export default class Buttons {
     });
   }
 
-  build($container, groups) {
+  build($container, groups, options = {}) {
     for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
       const group = groups[groupIdx];
       const groupName = Array.isArray(group) ? group[0] : group;
@@ -816,10 +1018,14 @@ export default class Buttons {
       }
       $group.appendTo($container);
     }
+
+    if (options.classPrefix) {
+      this.applyContainerButtonClassNames($container, options.classPrefix);
+    }
   }
 
   /**
-   * @param {jQuery} [$container]
+   * @param {DomQuery} [$container]
    */
   updateCurrentStyle($container) {
     const $cont = $container || this.$toolbar;
@@ -846,72 +1052,66 @@ export default class Buttons {
       },
     });
 
-    if (styleInfo['font-family']) {
-      const fontNames = styleInfo['font-family'].split(',').map((name) => {
-        return name.replace(/[\'\"]/g, '')
-          .replace(/\s+$/, '')
-          .replace(/^\s+/, '');
+    const currentStyleTag = this.getCurrentStyleTag(styleInfo);
+    if (currentStyleTag) {
+      this.updateDropdownChecks($cont, '.dropdown-style a', ($item) => {
+        return ($item.data('value') + '').toLowerCase() === currentStyleTag;
       });
+    }
+
+    if (styleInfo['font-family']) {
+      const fontNames = styleInfo['font-family'].split(',').map((name) => this.normalizeFontFamilyName(name));
       const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
 
-      $cont.find('.dropdown-fontname a').each((idx, item) => {
-        const $item = $(item);
-        // always compare string to avoid creating another func.
-        const isChecked = ($item.data('value') + '') === (fontName + '');
-        $item.toggleClass('checked', isChecked);
+      this.updateDropdownChecks($cont, '.dropdown-fontname a', ($item) => {
+        return ($item.data('value') + '') === (fontName + '');
       });
-      $cont.find('.note-current-fontname').text(fontName).css('font-family', fontName);
+      const $currentFontName = $cont.find('.note-current-fontname');
+      $currentFontName.text(fontName);
+      $currentFontName.css('font-family', fontName);
     }
 
     if (styleInfo['font-size']) {
       const fontSize = styleInfo['font-size'];
-      $cont.find('.dropdown-fontsize a').each((idx, item) => {
-        const $item = $(item);
-        // always compare with string to avoid creating another func.
-        const isChecked = ($item.data('value') + '') === (fontSize + '');
-        $item.toggleClass('checked', isChecked);
+      this.updateDropdownChecks($cont, '.dropdown-fontsize a', ($item) => {
+        return ($item.data('value') + '') === (fontSize + '');
       });
       $cont.find('.note-current-fontsize').text(fontSize);
 
       const fontSizeUnit = styleInfo['font-size-unit'];
-      $cont.find('.dropdown-fontsizeunit a').each((idx, item) => {
-        const $item = $(item);
-        const isChecked = ($item.data('value') + '') === (fontSizeUnit + '');
-        $item.toggleClass('checked', isChecked);
+      this.updateDropdownChecks($cont, '.dropdown-fontsizeunit a', ($item) => {
+        return ($item.data('value') + '') === (fontSizeUnit + '');
       });
       $cont.find('.note-current-fontsizeunit').text(fontSizeUnit);
     }
 
     if (styleInfo['line-height']) {
-      const lineHeight = styleInfo['line-height'];
-      $cont.find('.dropdown-line-height a').each((idx, item) => {
-        const $item = $(item);
-        // always compare with string to avoid creating another func.
-        const isChecked = ($(item).data('value') + '') === (lineHeight + '');
-        $item.toggleClass('checked', isChecked);
+      const lineHeight = this.normalizeLineHeight(styleInfo['line-height']);
+      this.updateDropdownChecks($cont, '.dropdown-line-height a', ($item) => {
+        return this.normalizeLineHeight($item.data('value')) === lineHeight;
       });
       $cont.find('.note-current-line-height').text(lineHeight);
     }
   }
 
   updateBtnStates($container, infos) {
-    $.each(infos, (selector, pred) => {
+    $$.each(infos, (selector, pred) => {
       this.ui.toggleBtnActive($container.find(selector), pred());
     });
   }
 
   tableMoveHandler(event) {
     const PX_PER_EM = 18;
-    const $picker = $(event.target.parentNode); // target is mousecatcher
+    const $picker = $$(event.target.parentNode); // target is mousecatcher
     const $dimensionDisplay = $picker.next();
     const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
     const $highlighted = $picker.find('.note-dimension-picker-highlighted');
     const $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
 
     let posOffset;
-    // HTML5 with jQuery - e.offsetX is undefined in Firefox
+    // Firefox can miss offsetX/offsetY on synthetic picker events.
     if (event.offsetX === undefined) {
-      const posCatcher = $(event.target).offset();
+      const posCatcher = $$(event.target).offset();
       posOffset = {
         x: event.pageX - posCatcher.left,
         y: event.pageY - posCatcher.top,

@@ -1,12 +1,12 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 
 export default class HelpDialog {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
-    this.$body = $(document.body);
+    this.ui = $$.summernote.ui;
+    this.$body = $$(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -45,11 +45,11 @@ export default class HelpDialog {
     const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
     return Object.keys(keyMap).map((key) => {
       const command = keyMap[key];
-      const $row = $('<div><div class="help-list-item"></div></div>');
-      $row.append($('<label><kbd>' + key + '</kdb></label>').css({
+      const $row = $$('<div><div class="help-list-item"></div></div>');
+      $row.append($$('<label><kbd>' + key + '</kdb></label>').css({
         'width': 180,
         'margin-right': 10,
-      })).append($('<span></span>').html(this.context.memo('help.' + command) || command));
+      })).append($$('<span></span>').html(this.context.memo('help.' + command) || command));
       return $row.html();
     }).join('');
   }
@@ -60,13 +60,13 @@ export default class HelpDialog {
    * @return {Promise}
    */
   showHelpDialog() {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve) => {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
-        deferred.resolve();
+        resolve();
       });
       this.ui.showDialog(this.$dialog);
-    }).promise();
+    });
   }
 
   show() {

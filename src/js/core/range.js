@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from './dom-query.js';
 import env from './env';
 import func from './func';
 import lists from './lists';
@@ -33,10 +33,9 @@ function textRangeToPoint(textRange, isStart) {
 
   if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
     const textRangeStart = document.body.createTextRange();
-    let curTextNode = null;
     textRangeStart.moveToElementText(prevContainer || container);
     textRangeStart.collapse(!prevContainer);
-    curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
+    let curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
 
     const pointTester = textRange.duplicate();
     pointTester.setEndPoint('StartToStart', textRangeStart);
@@ -205,7 +204,7 @@ class WrappedRange {
    * @return {WrappedRange}
    */
   scrollIntoView(container) {
-    const height = $(container).height();
+    const height = $$(container).height();
     if (container.scrollTop + height < this.sc.offsetTop) {
       container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
     }
@@ -282,7 +281,7 @@ class WrappedRange {
       startPoint.node,
       startPoint.offset,
       endPoint.node,
-      endPoint.offset
+      endPoint.offset,
     );
   }
 
@@ -373,7 +372,7 @@ class WrappedRange {
       boundaryPoints.sc,
       boundaryPoints.so,
       boundaryPoints.ec,
-      boundaryPoints.eo
+      boundaryPoints.eo,
     );
   }
 
@@ -414,7 +413,7 @@ class WrappedRange {
       boundaryPoints.sc,
       boundaryPoints.so,
       boundaryPoints.ec,
-      boundaryPoints.eo
+      boundaryPoints.eo,
     );
   }
 
@@ -438,7 +437,7 @@ class WrappedRange {
     });
 
     const emptyParents = [];
-    $.each(nodes, function(idx, node) {
+    nodes.forEach(function(node) {
       // find empty parents
       const parent = node.parentNode;
       if (point.node !== parent && dom.nodeLength(parent) === 1) {
@@ -448,7 +447,7 @@ class WrappedRange {
     });
 
     // remove empty parents
-    $.each(emptyParents, function(idx, node) {
+    emptyParents.forEach(function(node) {
       dom.remove(node, false);
     });
 
@@ -456,7 +455,7 @@ class WrappedRange {
       point.node,
       point.offset,
       point.node,
-      point.offset
+      point.offset,
     ).normalize();
   }
 
@@ -571,7 +570,8 @@ class WrappedRange {
   pasteHTML(markup) {
     markup = ((markup || '') + '').trim();
 
-    const contentsContainer = $('<div></div>').html(markup)[0];
+    const contentsContainer = document.createElement('div');
+    contentsContainer.innerHTML = markup;
     let childNodes = lists.from(contentsContainer.childNodes);
 
     // const rng = this.wrapBodyInlineWithPara().deleteContents();
@@ -630,7 +630,7 @@ class WrappedRange {
       startPoint.node,
       startPoint.offset,
       endPoint.node,
-      endPoint.offset
+      endPoint.offset,
     );
   }
 
@@ -661,7 +661,7 @@ class WrappedRange {
       startPoint.node,
       startPoint.offset,
       endPoint.node,
-      endPoint.offset
+      endPoint.offset,
     );
   }
 
@@ -687,7 +687,7 @@ class WrappedRange {
         point.node,
         point.offset,
         endPoint.node,
-        endPoint.offset
+        endPoint.offset,
       );
       var result = regex.exec(rng.toString());
       return result && result.index === 0;
@@ -697,7 +697,7 @@ class WrappedRange {
       startPoint.node,
       startPoint.offset,
       endPoint.node,
-      endPoint.offset
+      endPoint.offset,
     );
 
     var text = rng.toString();

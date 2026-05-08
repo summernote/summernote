@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 export default class Placeholder {
   constructor(context) {
     this.context = context;
@@ -26,7 +26,7 @@ export default class Placeholder {
   }
 
   initialize() {
-    this.$placeholder = $('<div class="note-placeholder"></div>');
+    this.$placeholder = $$('<div class="note-placeholder"></div>');
     this.$placeholder.on('click', () => {
       this.context.invoke('focus');
     }).html(this.options.placeholder).prependTo(this.$editingArea);

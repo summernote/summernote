@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import func from '../core/func';
 import lists from '../core/lists';
 import dom from '../core/dom';
@@ -11,7 +11,7 @@ export default class HintPopover {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
+    this.ui = $$.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
     this.hint = this.options.hint || [];
@@ -42,15 +42,22 @@ export default class HintPopover {
     this.matchingWord = null;
     this.$popover = this.ui.popover({
       className: 'note-hint-popover',
-      hideArrow: true,
       direction: '',
     }).render().appendTo(this.options.container);
 
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
+    this.$content
+      .addClass('note-hint-content')
+      .attr('role', 'listbox');
     this.$content.on('click', '.note-hint-item', (event) => {
-      this.$content.find('.active').removeClass('active');
-      $(event.currentTarget).addClass('active');
+      const target = event.target.closest('.note-hint-item');
+      if (!target) {
+        return;
+      }
+      this.$content.find('.note-hint-item').attr('aria-selected', 'false').removeClass('active');
+      $$(target).addClass('active');
+      $$(target).attr('aria-selected', 'true');
       this.replace();
     });
 
@@ -62,8 +69,9 @@ export default class HintPopover {
   }
 
   selectItem($item) {
-    this.$content.find('.active').removeClass('active');
+    this.$content.find('.note-hint-item').attr('aria-selected', 'false').removeClass('active');
     $item.addClass('active');
+    $item.attr('aria-selected', 'true');
 
     this.$content[0].scrollTop = $item[0].offsetTop - (this.$content.innerHeight() / 2);
   }
@@ -121,7 +129,7 @@ export default class HintPopover {
 
       if (this.options.hintSelect === 'next') {
         var blank = document.createTextNode('');
-        $(node).after(blank);
+        $$(node).after(blank);
         range.createFromNodeBefore(blank).select();
       } else {
         range.createFromNodeAfter(node).select();
@@ -147,7 +155,7 @@ export default class HintPopover {
   createItemTemplates(hintIdx, items) {
     const hint = this.hints[hintIdx];
     return items.map((item , idx) => {
-      const $item = $('<div class="note-hint-item"></div>');
+      const $item = $$('<button type="button" class="note-hint-item list-group-item list-group-item-action" role="option" aria-selected="false"></button>');
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
         'index': hintIdx,
@@ -156,6 +164,7 @@ export default class HintPopover {
 
       if (hintIdx === 0 && idx === 0) {
         $item.addClass('active');
+        $item.attr('aria-selected', 'true');
       }
 
       return $item;
@@ -163,7 +172,7 @@ export default class HintPopover {
   }
 
   handleKeydown(event) {
-    if (!this.$popover.is(':visible')) {
+    if (this.$popover.css('display') === 'none') {
       return;
     }
 
@@ -191,7 +200,7 @@ export default class HintPopover {
   }
 
   createGroup(idx, keyword) {
-    const $group = $('<div class="note-hint-group note-hint-group-' + idx + '"></div>');
+    const $group = $$('<div class="note-hint-group note-hint-group-' + idx + '"></div>');
     this.searchKeyword(idx, keyword, (items) => {
       items = items || [];
       if (items.length) {
@@ -233,7 +242,7 @@ export default class HintPopover {
         this.$content.empty();
 
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
-        const containerOffset = $(this.options.container).offset();
+        const containerOffset = $$(this.options.container).offset();
         if (bnd) {
           bnd.top -= containerOffset.top;
           bnd.left -= containerOffset.left;

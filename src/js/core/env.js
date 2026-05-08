@@ -1,4 +1,4 @@
-import $ from 'jquery';
+// Environment and browser capability helpers.
 
 /**
  * returns whether font is installed or not.
@@ -9,7 +9,7 @@ import $ from 'jquery';
 const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
-  return ($.inArray(fontName.toLowerCase(), genericFontFamilies) === -1) ? `'${fontName}'` : fontName;
+  return (genericFontFamilies.indexOf(fontName.toLowerCase()) === -1) ? `'${fontName}'` : fontName;
 }
 
 function createIsFontInstalledFunc() {
