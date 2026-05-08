@@ -38,11 +38,15 @@ DomQuery.prototype.summernote = function() {
   const type = typeof(lists.head(arguments));
   const isExternalAPICalled = type === 'string';
   const hasInitOptions = type === 'object';
+  const initOptions = hasInitOptions ? lists.head(arguments) : {};
 
-  const options = $$.extend({}, $$.summernote.options, hasInitOptions ? lists.head(arguments) : {});
+  const options = $$.extend({}, $$.summernote.options, initOptions);
 
   // Update options
   options.langInfo = $$.extend(true, {}, $$.summernote.lang['en-US'], $$.summernote.lang[options.lang]);
+  if (!Object.prototype.hasOwnProperty.call(initOptions, 'colorsName') && options.langInfo.color?.colorsName) {
+    options.colorsName = options.langInfo.color.colorsName;
+  }
   options.icons = $$.extend(true, {}, $$.summernote.options.icons, options.icons);
   options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
 

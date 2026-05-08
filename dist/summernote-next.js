@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-08T18:45Z
+Date: 2026-05-08T19:26Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -1019,7 +1019,89 @@ var summernote = (function() {
 			setTransparent: "Set transparent",
 			reset: "Reset",
 			resetToDefault: "Reset to default",
-			cpSelect: "Select"
+			cpSelect: "Select",
+			colorsName: [
+				[
+					"Black",
+					"Tundora",
+					"Dove Gray",
+					"Star Dust",
+					"Pale Slate",
+					"Gallery",
+					"Alabaster",
+					"White"
+				],
+				[
+					"Red",
+					"Orange Peel",
+					"Yellow",
+					"Green",
+					"Cyan",
+					"Blue",
+					"Electric Violet",
+					"Magenta"
+				],
+				[
+					"Azalea",
+					"Karry",
+					"Egg White",
+					"Zanah",
+					"Botticelli",
+					"Tropical Blue",
+					"Mischka",
+					"Twilight"
+				],
+				[
+					"Tonys Pink",
+					"Peach Orange",
+					"Cream Brulee",
+					"Sprout",
+					"Casper",
+					"Perano",
+					"Cold Purple",
+					"Careys Pink"
+				],
+				[
+					"Mandy",
+					"Rajah",
+					"Dandelion",
+					"Olivine",
+					"Gulf Stream",
+					"Viking",
+					"Blue Marguerite",
+					"Puce"
+				],
+				[
+					"Guardsman Red",
+					"Fire Bush",
+					"Golden Dream",
+					"Chelsea Cucumber",
+					"Smalt Blue",
+					"Boston Blue",
+					"Butterfly Bush",
+					"Cadillac"
+				],
+				[
+					"Sangria",
+					"Mai Tai",
+					"Buddha Gold",
+					"Forest Green",
+					"Eden",
+					"Venice Blue",
+					"Meteorite",
+					"Claret"
+				],
+				[
+					"Rosewood",
+					"Cinnamon",
+					"Olive",
+					"Parsley",
+					"Tiber",
+					"Midnight Blue",
+					"Valentino",
+					"Loulou"
+				]
+			]
 		},
 		shortcut: {
 			shortcuts: "Keyboard shortcuts",
@@ -1068,7 +1150,19 @@ var summernote = (function() {
 			specialChar: "SPECIAL CHARACTERS",
 			select: "Select Special characters"
 		},
-		output: { noSelection: "No Selection Made!" }
+		output: { noSelection: "No Selection Made!" },
+		helpDialog: {
+			brand: "Summernote Next",
+			platform: {
+				mac: "macOS",
+				pc: "Windows and Linux"
+			},
+			links: {
+				examples: "Examples",
+				project: "Project",
+				issues: "Issues"
+			}
+		}
 	} });
 	//#endregion
 	//#region src/js/core/env.js
@@ -2664,9 +2758,10 @@ var summernote = (function() {
 	DomQuery.prototype.summernote = function() {
 		const type = typeof lists_default.head(arguments);
 		const isExternalAPICalled = type === "string";
-		const hasInitOptions = type === "object";
-		const options = $$.extend({}, $$.summernote.options, hasInitOptions ? lists_default.head(arguments) : {});
+		const initOptions = type === "object" ? lists_default.head(arguments) : {};
+		const options = $$.extend({}, $$.summernote.options, initOptions);
 		options.langInfo = $$.extend(true, {}, $$.summernote.lang["en-US"], $$.summernote.lang[options.lang]);
+		if (!Object.prototype.hasOwnProperty.call(initOptions, "colorsName") && options.langInfo.color?.colorsName) options.colorsName = options.langInfo.color.colorsName;
 		options.icons = $$.extend(true, {}, $$.summernote.options.icons, options.icons);
 		options.tooltip = options.tooltip === "auto" ? !env_default.isSupportTouch : options.tooltip;
 		this.each((idx, note) => {
@@ -7949,7 +8044,7 @@ var summernote = (function() {
 			})).filter((section) => section.items.length > 0);
 		}
 		createDialogBody() {
-			const platformLabel = env_default.isMac ? "macOS" : "Windows and Linux";
+			const platformLabel = env_default.isMac ? this.lang.helpDialog?.platform?.mac || "macOS" : this.lang.helpDialog?.platform?.pc || "Windows and Linux";
 			const sections = this.getShortcutSections().map((section) => `
       <section class="note-help-dialog-section" aria-label="${this.escapeHtml(section.title)}">
         <h5 class="note-help-dialog-section-title">${this.escapeHtml(section.title)}</h5>
@@ -7976,15 +8071,16 @@ var summernote = (function() {
     `;
 		}
 		createDialogFooter() {
+			const versionLabel = this.escapeHtml($$.summernote.version);
 			return `
       <div class="note-help-dialog-footer">
-        <span class="note-help-dialog-footer-copy">Summernote Next ${this.escapeHtml($$.summernote.version)}</span>
+        <span class="note-help-dialog-footer-copy">${this.escapeHtml(this.lang.helpDialog?.brand || "Summernote Next")} ${versionLabel}</span>
         <span class="note-help-dialog-footer-links">
-          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
+          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">${this.escapeHtml(this.lang.helpDialog?.links?.examples || "Examples")}</a>
           <span aria-hidden="true">·</span>
-          <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">Project</a>
+          <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">${this.escapeHtml(this.lang.helpDialog?.links?.project || "Project")}</a>
           <span aria-hidden="true">·</span>
-          <a href="https://github.com/jschwind/summernote-next/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+          <a href="https://github.com/jschwind/summernote-next/issues" target="_blank" rel="noopener noreferrer">${this.escapeHtml(this.lang.helpDialog?.links?.issues || "Issues")}</a>
         </span>
       </div>
     `;

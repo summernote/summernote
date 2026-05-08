@@ -50,6 +50,7 @@
     "dev": "vite --config vite.config.dev.js",
     "prebuild": "node ./scripts/build-fonts.js",
     "build": "vite build",
+    "postbuild": "node ./scripts/build-language-assets.js",
     "buildall": "npm run prebuild && node ./scripts/build-all.js",
     "lint": "eslint src test scripts",
     "test": "vitest run",

@@ -1,6 +1,7 @@
 import { build } from 'vite';
 import { configs, version } from '../vite.config.js';
 import AdmZip from 'adm-zip';
+import { buildLanguageAssets } from './build-language-assets.js';
 
 // build every files by iterating all styles
 await Promise.all(Object.values(configs).map(async(config, index) => {
@@ -24,6 +25,8 @@ await Promise.all(Object.values(configs).map(async(config, index) => {
   config.build.rollupOptions.output.entryFileNames = 'summernote-next.js';
   await build(config);
 }));
+
+await buildLanguageAssets();
 
 // compress them all into a zip file for releasing
 try {

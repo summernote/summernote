@@ -138,7 +138,9 @@ export default class HelpDialog {
   }
 
   createDialogBody() {
-    const platformLabel = env.isMac ? 'macOS' : 'Windows and Linux';
+    const platformLabel = env.isMac
+      ? this.lang.helpDialog?.platform?.mac || 'macOS'
+      : this.lang.helpDialog?.platform?.pc || 'Windows and Linux';
     const sections = this.getShortcutSections().map((section) => `
       <section class="note-help-dialog-section" aria-label="${this.escapeHtml(section.title)}">
         <h5 class="note-help-dialog-section-title">${this.escapeHtml(section.title)}</h5>
@@ -168,15 +170,20 @@ export default class HelpDialog {
 
   createDialogFooter() {
     const versionLabel = this.escapeHtml($$.summernote.version);
+    const footerCopy = this.escapeHtml(this.lang.helpDialog?.brand || 'Summernote Next');
+    const examplesLabel = this.escapeHtml(this.lang.helpDialog?.links?.examples || 'Examples');
+    const projectLabel = this.escapeHtml(this.lang.helpDialog?.links?.project || 'Project');
+    const issuesLabel = this.escapeHtml(this.lang.helpDialog?.links?.issues || 'Issues');
+
     return `
       <div class="note-help-dialog-footer">
-        <span class="note-help-dialog-footer-copy">Summernote Next ${versionLabel}</span>
+        <span class="note-help-dialog-footer-copy">${footerCopy} ${versionLabel}</span>
         <span class="note-help-dialog-footer-links">
-          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
+          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">${examplesLabel}</a>
           <span aria-hidden="true">·</span>
-          <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">Project</a>
+          <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">${projectLabel}</a>
           <span aria-hidden="true">·</span>
-          <a href="https://github.com/jschwind/summernote-next/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+          <a href="https://github.com/jschwind/summernote-next/issues" target="_blank" rel="noopener noreferrer">${issuesLabel}</a>
         </span>
       </div>
     `;

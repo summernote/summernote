@@ -120,6 +120,16 @@ $$.extend(true, $$.summernote.lang, {
       reset: 'Reset',
       resetToDefault: 'Reset to default',
       cpSelect: 'Select',
+      colorsName: [
+        ['Black', 'Tundora', 'Dove Gray', 'Star Dust', 'Pale Slate', 'Gallery', 'Alabaster', 'White'],
+        ['Red', 'Orange Peel', 'Yellow', 'Green', 'Cyan', 'Blue', 'Electric Violet', 'Magenta'],
+        ['Azalea', 'Karry', 'Egg White', 'Zanah', 'Botticelli', 'Tropical Blue', 'Mischka', 'Twilight'],
+        ['Tonys Pink', 'Peach Orange', 'Cream Brulee', 'Sprout', 'Casper', 'Perano', 'Cold Purple', 'Careys Pink'],
+        ['Mandy', 'Rajah', 'Dandelion', 'Olivine', 'Gulf Stream', 'Viking', 'Blue Marguerite', 'Puce'],
+        ['Guardsman Red', 'Fire Bush', 'Golden Dream', 'Chelsea Cucumber', 'Smalt Blue', 'Boston Blue', 'Butterfly Bush', 'Cadillac'],
+        ['Sangria', 'Mai Tai', 'Buddha Gold', 'Forest Green', 'Eden', 'Venice Blue', 'Meteorite', 'Claret'],
+        ['Rosewood', 'Cinnamon', 'Olive', 'Parsley', 'Tiber', 'Midnight Blue', 'Valentino', 'Loulou'],
+      ],
     },
     shortcut: {
       shortcuts: 'Keyboard shortcuts',
@@ -170,6 +180,18 @@ $$.extend(true, $$.summernote.lang, {
     },
     output: {
       noSelection: 'No Selection Made!',
+    },
+    helpDialog: {
+      brand: 'Summernote Next',
+      platform: {
+        mac: 'macOS',
+        pc: 'Windows and Linux',
+      },
+      links: {
+        examples: 'Examples',
+        project: 'Project',
+        issues: 'Issues',
+      },
     },
   },
 });

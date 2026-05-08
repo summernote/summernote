@@ -1,0 +1,3 @@
+{"total": {"lines":{"total":42,"covered":42,"skipped":0,"pct":100},"statements":{"total":46,"covered":46,"skipped":0,"pct":100},"functions":{"total":13,"covered":13,"skipped":0,"pct":100},"branches":{"total":28,"covered":28,"skipped":0,"pct":100},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":"Unknown"}}
+,"/app/src/js/summernote.js": {"lines":{"total":42,"covered":42,"skipped":0,"pct":100},"functions":{"total":13,"covered":13,"skipped":0,"pct":100},"statements":{"total":46,"covered":46,"skipped":0,"pct":100},"branches":{"total":28,"covered":28,"skipped":0,"pct":100}}
+}

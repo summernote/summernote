@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,toolbar-colors}.html', {
+const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,german,toolbar-colors}.html', {
   eager: true,
   query: '?raw',
   import: 'default',
@@ -30,6 +30,15 @@ describe('example asset references', () => {
   it('keeps an example configuration block on the full example page', () => {
     expect(examplePages['../../examples/full.html']).to.contain('data-example-configuration');
     expect(examplePages['../../examples/full.html']).to.contain('summernote.create(\'#all-features-editor\', {');
+  });
+
+  it('loads the German language bundle and configures the editor locale on the German example page', () => {
+    const germanPage = examplePages['../../examples/german.html'];
+
+    expect(germanPage).to.contain('/dist/summernote-next.js');
+    expect(germanPage).to.contain('/dist/lang/de-de.js');
+    expect(germanPage).to.contain('summernote.create(\'#editor\', {');
+    expect(germanPage).to.contain('lang: \'de-DE\'');
   });
 
   it('renders two separate example configuration cards on the toolbar colors page', () => {

@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
+import '@/js/summernote-de-DE';
+import '@/js/summernote-fr-FR';
 import '@/styles/bs5/summernote-bs5';
 
 describe('summernote public API', () => {
@@ -83,5 +85,46 @@ describe('summernote public API', () => {
 
     expect(result).to.equal($missing);
     expect(result.length).to.equal(0);
+  });
+
+  it('uses loaded locale data for editor options and toolbar copy', () => {
+    const $note = $$('<div><p>hallo</p></div>').appendTo('body');
+
+    const context = $$.create($note, {
+      lang: 'de-DE',
+    });
+
+    expect(context.options.langInfo.font.bold).to.equal('Fett');
+    expect(context.options.langInfo.options.help).to.equal('Hilfe');
+    expect(context.options.colorsName[0][0]).to.equal('Schwarz');
+    expect(context.layoutInfo.toolbar.find('[aria-label="Fett (CTRL+B)"]').length).to.equal(1);
+  });
+
+  it('falls back to the default color names when a locale does not override them', () => {
+    const $note = $$('<div><p>bonjour</p></div>').appendTo('body');
+
+    const context = $$.create($note, {
+      lang: 'fr-FR',
+    });
+
+    expect(context.options.langInfo.options.help).to.equal('Aide');
+    expect(context.options.colorsName[0][0]).to.equal('Black');
+  });
+
+  it('preserves explicit color names instead of replacing them from the locale bundle', () => {
+    const $note = $$('<div><p>hallo</p></div>').appendTo('body');
+    const colorsName = $$.summernote.options.colorsName.map((row, rowIndex) => {
+      return row.map((name, columnIndex) => {
+        return rowIndex === 0 && columnIndex === 0 ? 'Eigene Farbe' : name;
+      });
+    });
+
+    const context = $$.create($note, {
+      lang: 'de-DE',
+      colorsName,
+    });
+
+    expect(context.options.colorsName).to.equal(colorsName);
+    expect(context.options.colorsName[0][0]).to.equal('Eigene Farbe');
   });
 });
