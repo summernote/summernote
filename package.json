@@ -12,7 +12,7 @@
     "vanilla-js",
     "wysiwyg"
   ],
-  "homepage": "https://juergen-schwind.de/summernote-next",
+  "homepage": "https://juergen-schwind.com/summernote-next",
   "bugs": {
     "url": "https://github.com/jschwind/summernote-next/issues"
   },
@@ -23,7 +23,7 @@
   "author": {
     "name": "Jürgen Schwind",
     "email": "info@juergen-schwind.de",
-    "url": "https://juergen-schwind.de"
+    "url": "https://juergen-schwind.com"
   },
   "contributors": [
     "Hackerwins and contributors",

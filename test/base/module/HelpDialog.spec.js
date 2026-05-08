@@ -50,7 +50,7 @@ describe('HelpDialog', () => {
     expect(dialog.$dialog.find('.note-help-dialog-item').length).to.be.greaterThan(5);
 
     const footerHtml = dialog.$dialog.find('.modal-footer').html();
-    expect(footerHtml).to.contain('https://juergen-schwind.de/summernote-next');
+    expect(footerHtml).to.contain('https://juergen-schwind.com/summernote-next');
     expect(footerHtml).to.contain('https://github.com/jschwind/summernote-next');
     expect(footerHtml).to.contain('/issues');
   });

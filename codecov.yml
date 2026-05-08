@@ -1,14 +1,21 @@
 codecov:
-  require_ci_to_pass: false
+  require_ci_to_pass: true
 
 coverage:
+  precision: 2
+  round: down
+  range: 0...100
   status:
     project:
       default:
-        informational: true
+        target: 100%
+        threshold: 0%
+        informational: false
     patch:
       default:
-        informational: true
+        target: 100%
+        threshold: 0%
+        informational: false
 
 ignore:
   - "dist/**/*"

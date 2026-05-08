@@ -1,7 +1,7 @@
 export const THEME_STORAGE_KEY = 'summernote-examples-theme';
 const PROJECT_LINKS = [
   {
-    href: 'https://juergen-schwind.de/summernote-next',
+    href: 'https://juergen-schwind.com/summernote-next',
     label: 'Live examples',
   },
   {
@@ -9,7 +9,7 @@ const PROJECT_LINKS = [
     label: 'GitHub repository',
   },
   {
-    href: 'https://juergen-schwind.de',
+    href: 'https://juergen-schwind.com',
     label: 'Maintainer website',
   },
   {
@@ -287,7 +287,7 @@ function ensureProjectLinks(documentRef) {
   footer.setAttribute('data-examples-project-links', 'true');
   footer.innerHTML = `
     <span class="examples-project-links-copy">
-      Summernote Next by <a href="https://juergen-schwind.de" target="_blank" rel="noopener noreferrer">Jürgen Schwind</a>
+      Summernote Next by <a href="https://juergen-schwind.com" target="_blank" rel="noopener noreferrer">Jürgen Schwind</a>
     </span>
     <span class="examples-project-links-actions">
       ${PROJECT_LINKS.map(({ href, label }) => `
