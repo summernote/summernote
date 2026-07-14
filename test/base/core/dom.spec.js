@@ -324,6 +324,18 @@ describe('base:core.dom', () => {
 
         expect($cont.html()).to.equalsIgnoreCase('<p><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></p>');
       });
+
+      it('should clamp an out-of-range offset instead of throwing IndexSizeError', () => {
+        let $s = $para.find('s');
+        expect(() => {
+          dom.splitTree($para[0], { node: $s[0].firstChild, offset: 100 });
+        }).to.not.throw();
+
+        // The stale offset (100) is clamped to the text node's length inside
+        // splitNode, so no IndexSizeError is thrown and no content is lost.
+        expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s>');
+        expect($para.next().html()).to.equalsIgnoreCase('<s></s><i>i</i>');
+      });
     });
   });
 
