@@ -137,7 +137,7 @@
             // insert video node
             context.invoke('editor.insertNode', $node);
           }
-        }).fail(function() {
+        }).catch(function() {
           context.invoke('editor.restoreRange');
         });
       };
@@ -149,7 +149,7 @@
        * @return {Promise}
        */
       this.showSpecialCharDialog = function(text) {
-        return $.Deferred(function(deferred) {
+        return new Promise(function(resolve, reject) {
           var $specialCharDialog = self.$dialog;
           var $specialCharNode = $specialCharDialog.find('.note-specialchar-node');
           var $selectedNode = null;
@@ -239,7 +239,7 @@
               return;
             }
 
-            deferred.resolve(decodeURIComponent($selectedNode.find('button').attr('data-value')));
+            resolve(decodeURIComponent($selectedNode.find('button').attr('data-value')));
             $specialCharDialog.modal('hide');
           }
 
@@ -286,7 +286,7 @@
 
             $specialCharNode.on('click', function(event) {
               event.preventDefault();
-              deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').attr('data-value')));
+              resolve(decodeURIComponent($(event.currentTarget).find('button').attr('data-value')));
               ui.hideDialog(self.$dialog);
             });
           });
@@ -298,9 +298,7 @@
 
             $(document).off('keydown', keyDownEventHandler);
 
-            if (deferred.state() === 'pending') {
-              deferred.reject();
-            }
+            reject();
           });
 
           ui.showDialog(self.$dialog);

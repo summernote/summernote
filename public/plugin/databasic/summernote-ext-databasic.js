@@ -213,13 +213,13 @@
 
           self.updateNode(info);
         })
-        .fail(function() {
+        .catch(function() {
           context.invoke('editor.restoreRange');
         });
     };
 
     self.openDialog = function(info) {
-      return $.Deferred(function(deferred) {
+      return new Promise(function(resolve, reject) {
         var $inpTest = self.$dialog.find('.ext-databasic-test');
         var $saveBtn = self.$dialog.find('.ext-databasic-save');
         var onKeyup = function(event) {
@@ -240,7 +240,7 @@
             .on('click', function(event) {
               event.preventDefault();
 
-              deferred.resolve({ test: $inpTest.val() });
+              resolve({ test: $inpTest.val() });
             });
 
           // init save button
@@ -251,9 +251,7 @@
           $inpTest.off('input keyup');
           $saveBtn.off('click');
 
-          if (deferred.state() === 'pending') {
-            deferred.reject();
-          }
+          reject();
         });
 
         ui.showDialog(self.$dialog);

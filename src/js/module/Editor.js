@@ -782,7 +782,7 @@ export default class Editor {
       this.getLastRange().insertNode($image[0]);
       this.setLastRange(range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
-    }).fail((e) => {
+    }).catch((e) => {
       this.context.triggerEvent('image.upload.error', e);
     });
   }
@@ -799,7 +799,7 @@ export default class Editor {
       } else {
         readFileAsDataURL(file).then((dataURL) => {
           return this.insertImage(dataURL, filename);
-        }).fail(() => {
+        }).catch(() => {
           this.context.triggerEvent('image.upload.error');
         });
       }
@@ -886,7 +886,7 @@ export default class Editor {
         rng.select();
       }
     } else {
-      const noteStatusOutput = $.now();
+      const noteStatusOutput = Date.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
       setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }

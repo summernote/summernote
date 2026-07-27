@@ -76,7 +76,7 @@ export default class ImageDialog {
       } else { // array of files
         this.context.invoke('editor.insertImagesOrCallback', data);
       }
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }
@@ -88,7 +88,7 @@ export default class ImageDialog {
    * @return {Promise}
    */
   showImageDialog() {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
       const $imageInput = this.$dialog.find('.note-image-input');
       const $imageUrl = this.$dialog.find('.note-image-url');
       const $imageBtn = this.$dialog.find('.note-image-btn');
@@ -98,7 +98,7 @@ export default class ImageDialog {
 
         // Cloning imageInput to clear element.
         $imageInput.replaceWith($imageInput.clone().on('change', (event) => {
-          deferred.resolve(event.target.files || event.target.value);
+          resolve(event.target.files || event.target.value);
         }).val(''));
 
         $imageUrl.on('input paste propertychange', () => {
@@ -111,7 +111,7 @@ export default class ImageDialog {
 
         $imageBtn.on('click', (event) => {
           event.preventDefault();
-          deferred.resolve($imageUrl.val());
+          resolve($imageUrl.val());
         });
 
         this.bindEnterKey($imageUrl, $imageBtn);
@@ -122,9 +122,7 @@ export default class ImageDialog {
         $imageUrl.off();
         $imageBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
-        }
+        reject();
       });
 
       this.ui.showDialog(this.$dialog);
