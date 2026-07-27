@@ -886,7 +886,7 @@ export default class Editor {
         rng.select();
       }
     } else {
-      const noteStatusOutput = $.now();
+      const noteStatusOutput = Date.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
       setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }
