@@ -60,13 +60,13 @@ export default class HelpDialog {
    * @return {Promise}
    */
   showHelpDialog() {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
-        deferred.resolve();
+        resolve();
       });
       this.ui.showDialog(this.$dialog);
-    }).promise();
+    });
   }
 
   show() {

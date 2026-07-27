@@ -1,7 +1,6 @@
 // Variables
 
 $sni-css-prefix: note-icon !default;
-$sni-font-path: "./font" !default;
 
 // Path
 
@@ -10,11 +9,7 @@ $sni-font-path: "./font" !default;
   font-style: normal;
   font-weight: 400;
   font-display: auto;
-  src: url("#{$sni-font-path}/summernote.eot?#iefix") format("embedded-opentype"),
-       url("#{$sni-font-path}/summernote.woff2") format("woff2"),
-       url("#{$sni-font-path}/summernote.woff") format("woff"),
-       url("#{$sni-font-path}/summernote.ttf") format("truetype");
-}
+  src: url("./font/summernote.eot?#iefix") format("embedded-opentype"), url("./font/summernote.woff2") format("woff2"), url("./font/summernote.woff") format("woff"), url("./font/summernote.ttf") format("truetype");}
 
 // Core
 
@@ -58,7 +53,6 @@ $sni-font-path: "./font" !default;
   &.#{$sni-css-prefix}-pull-left {
     margin-right: 0.3em;
   }
-
   &.#{$sni-css-prefix}-pull-right {
     margin-left: 0.3em;
   }
@@ -73,7 +67,8 @@ $sni-font-path: "./font" !default;
 
   @if "\\#{'x'}" == "\\x" {
     @return str-slice("\x", 1, 1) + $character-code;
-  } @else {
+  }
+  @else {
     @return #{"\"\\"}#{$character-code + "\""};
   }
 }
@@ -304,3 +299,4 @@ $sni-font-path: "./font" !default;
 .note-icon-video::before {
   content: "\ea38";
 }
+
