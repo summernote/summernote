@@ -18,6 +18,14 @@ describe('base:editing.Style', () => {
 
   describe('base:editing.Typing', () => {
     describe('insertParagraph', () => {
+      it('should insert a paragraph at the end of an inline element followed by a <br>', () => {
+        const $editable = $('<div class="note-editable"><p><span style="font-family: Arial;">test123</span><br></p></div>');
+        const text = $editable.find('span')[0].firstChild;
+
+        expect(() => typing(0).insertParagraph($editable, range.create(text, 7))).not.toThrow();
+        expect($editable.html()).to.equalsIgnoreCase('<p><span style="font-family: Arial;">test123</span></p><p><br></p>');
+      });
+
       describe('blockquote breaking support', () => {
         var $editable;
 
