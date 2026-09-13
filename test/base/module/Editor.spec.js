@@ -62,6 +62,31 @@ describe('Editor', () => {
     });
   });
 
+  describe('editable attributes', () => {
+    function createEditable(extraOptions) {
+      const options = $.extend({}, $.summernote.options, extraOptions);
+      return new Context($('<div><p>hello</p></div>'), options).layoutInfo.editable;
+    }
+
+    it('should set spellcheck and autocorrect to "true" by default', () => {
+      const $customEditable = createEditable({});
+      expect($customEditable.attr('spellcheck')).toEqual('true');
+      expect($customEditable.attr('autocorrect')).toEqual('true');
+    });
+
+    // jQuery 4 removes an attribute for .attr(name, false)
+    it('should set spellcheck and autocorrect to "false" when spellCheck is false', () => {
+      const $customEditable = createEditable({ spellCheck: false });
+      expect($customEditable.attr('spellcheck')).toEqual('false');
+      expect($customEditable.attr('autocorrect')).toEqual('false');
+    });
+
+    it('should set data-gramm to "false" when disableGrammar is true', () => {
+      const $customEditable = createEditable({ disableGrammar: true });
+      expect($customEditable.attr('data-gramm')).toEqual('false');
+    });
+  });
+
   describe('undo and redo', () => {
     it('should control history', async() => {
       editor.insertText(' world');
