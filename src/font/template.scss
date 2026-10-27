@@ -1,6 +1,7 @@
 // Variables
 
 $sni-css-prefix: {{ className }} !default;
+$sni-font-path: "{{ fontPath | replace(r/\/$/, '') }}" !default;
 
 // Path
 
@@ -15,24 +16,27 @@ $sni-css-prefix: {{ className }} !default;
   {%- set ttfIndex = formats.indexOf('ttf') -%}
   {%- set svgIndex = formats.indexOf('svg') %}
   src: {% if eotIndex != -1 -%}
-    url("{{ fontPath }}{{ fontName }}.eot?#iefix") format("embedded-opentype")
+    url("#{$sni-font-path}/{{ fontName }}.eot?#iefix") format("embedded-opentype")
     {%- set nothing = formats.splice(eotIndex, 1) -%}
-    {%- if formats.length != 0 -%}, {% else -%}; {% endif -%}
+    {%- if formats.length != 0 -%},
+       {% else -%}; {% endif -%}
   {%- endif -%}
   {%- if woff2Index != -1 -%}
-    url("{{ fontPath }}{{ fontName }}.woff2") format("woff2")
+    url("#{$sni-font-path}/{{ fontName }}.woff2") format("woff2")
     {%- set nothing = formats.splice(woff2Index, 1) -%}
-    {%- if formats.length != 0 -%}, {% else -%}; {% endif -%}
+    {%- if formats.length != 0 -%},
+       {% else -%}; {% endif -%}
   {%- endif -%}
   {%- if woffIndex != -1 -%}
-    url("{{ fontPath }}{{ fontName }}.woff") format("woff")
+    url("#{$sni-font-path}/{{ fontName }}.woff") format("woff")
     {%- set nothing = formats.splice(woffIndex, 1) -%}
-    {%- if formats.length != 0 -%}, {% else -%}; {% endif -%}
+    {%- if formats.length != 0 -%},
+       {% else -%}; {% endif -%}
   {%- endif -%}
   {%- if ttfIndex != -1 -%}
-    url("{{ fontPath }}{{ fontName }}.ttf") format("truetype");
+    url("#{$sni-font-path}/{{ fontName }}.ttf") format("truetype");
     {%- set nothing = formats.splice(ttfIndex, 1) -%}
-  {%- endif -%}
+  {%- endif %}
 }
 
 // Core
@@ -77,6 +81,7 @@ $sni-css-prefix: {{ className }} !default;
   &.#{$sni-css-prefix}-pull-left {
     margin-right: 0.3em;
   }
+
   &.#{$sni-css-prefix}-pull-right {
     margin-left: 0.3em;
   }
@@ -91,8 +96,7 @@ $sni-css-prefix: {{ className }} !default;
 
   @if "\\#{'x'}" == "\\x" {
     @return str-slice("\x", 1, 1) + $character-code;
-  }
-  @else {
+  } @else {
     @return #{"\"\\"}#{$character-code + "\""};
   }
 }
@@ -103,4 +107,4 @@ $sni-css-prefix: {{ className }} !default;
 .{{ className }}-{{ glyph.name }}::before {
   content: "\{{ glyph.unicode[0].charCodeAt(0).toString(16) }}";
 }
-{% endfor %}
+{% endfor -%}
