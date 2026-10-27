@@ -21,6 +21,16 @@ Date: ${date}
   'minimal': `Summernote v${version} | (c) 2013- Hackerwins and contributors | MIT license`,
 };
 
+// Fill in the version placeholder in the sources ($.summernote.version and the
+// help dialog), as the webpack build used to do.
+const versionPlaceholder = {
+  name: 'summernote-version',
+  transform(code, id) {
+    if (!id.includes('/src/') || !code.includes('@@VERSION@@')) return null;
+    return { code: code.replaceAll('@@VERSION@@', version), map: null };
+  },
+};
+
 const styles = [
   'lite',
   'bs3', 'bs4', 'bs5',
@@ -48,6 +58,7 @@ for (const style of styles) {
         if (fileName.endsWith('.js')) return banners['default'];
       }),
       vitePostCSSSourceMap(),
+      versionPlaceholder,
     ],
 
     css: {
