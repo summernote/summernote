@@ -483,12 +483,14 @@ export default class Buttons {
       click: this.context.createInvokeHandler('editor.indent'),
     });
 
-    this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
-    this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
-    this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
-    this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
-    this.context.memo('button.outdent', func.invoke(outdent, 'render'));
-    this.context.memo('button.indent', func.invoke(indent, 'render'));
+    // The toolbar calls each button with the context, so these must not
+    // forward their arguments to render(), which would take it as $parent.
+    this.context.memo('button.justifyLeft', () => justifyLeft.render());
+    this.context.memo('button.justifyCenter', () => justifyCenter.render());
+    this.context.memo('button.justifyRight', () => justifyRight.render());
+    this.context.memo('button.justifyFull', () => justifyFull.render());
+    this.context.memo('button.outdent', () => outdent.render());
+    this.context.memo('button.indent', () => indent.render());
 
     this.context.memo('button.paragraph', () => {
       return this.ui.buttonGroup([
