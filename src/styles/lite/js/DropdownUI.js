@@ -58,7 +58,7 @@ class DropdownUI {
 }
 
 $(document).on('click.note-dropdown-menu', function(e) {
-  if (!$(e.target).closest('.note-btn-group').length) {
+  if (!$(e.target).closest('.note-dropdown-menu').length) {
     $('.note-btn-group.open .note-btn.active').removeClass('active');
     $('.note-btn-group.open').removeClass('open');
   }
