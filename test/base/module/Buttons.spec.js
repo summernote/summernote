@@ -337,4 +337,36 @@ describe('Buttons', () => {
       expect($button.data('_lite_tooltip')).to.exist;
     });
   });
+  describe('paragraph buttons at the top level of the toolbar', () => {
+    var buttons = ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'outdent', 'indent'];
+
+    function create() {
+      $('body').empty();
+      var $note = $('<div><p>hello</p></div>').appendTo('body');
+      var options = $.extend({}, $.summernote.options);
+      options.toolbar = [['para', buttons]];
+      var ctx = new Context($note, options);
+      ctx.initialize();
+      return ctx;
+    }
+
+    it('should initialize without throwing', () => {
+      expect(create).to.not.throw();
+    });
+
+    it('should render one button for each in the toolbar', () => {
+      var ctx = create();
+      expect(ctx.layoutInfo.toolbar.find('.note-btn').length).to.equal(buttons.length);
+    });
+
+    it('should center the paragraph when the center button is clicked', async() => {
+      var ctx = create();
+      var $editable = ctx.layoutInfo.editable;
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+
+      ctx.layoutInfo.toolbar.find('.note-btn').eq(1).trigger('click');
+      await nextTick();
+      expect($editable.find('p').css('text-align')).to.equal('center');
+    });
+  });
 });
