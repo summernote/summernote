@@ -85,6 +85,9 @@
         fullscreen: 'Volledig scherm',
         codeview: 'Bekijk Code',
       },
+      modal: {
+        close: 'sluiten',
+      },
       paragraph: {
         paragraph: 'Paragraaf',
         outdent: 'Inspringen verkleinen',

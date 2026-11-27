@@ -85,6 +85,9 @@
         fullscreen: 'フルスクリーン',
         codeview: 'コード表示',
       },
+      modal: {
+        close: '閉じる',
+      },
       paragraph: {
         paragraph: '文章',
         outdent: '字上げ',

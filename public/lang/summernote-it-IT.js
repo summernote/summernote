@@ -85,6 +85,9 @@
         fullscreen: 'Modalità a tutto schermo',
         codeview: 'Visualizza codice',
       },
+      modal: {
+        close: 'Chiudi',
+      },
       paragraph: {
         paragraph: 'Paragrafo',
         outdent: 'Diminuisce il livello di rientro',

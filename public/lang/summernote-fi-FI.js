@@ -84,6 +84,9 @@
         fullscreen: 'Koko näyttö',
         codeview: 'HTML-näkymä',
       },
+      modal: {
+        close: 'Sulje',
+      },
       paragraph: {
         paragraph: 'Kappale',
         outdent: 'Pienennä sisennystä',

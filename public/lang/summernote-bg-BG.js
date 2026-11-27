@@ -85,6 +85,9 @@
         fullscreen: 'На цял екран',
         codeview: 'Преглед на код',
       },
+      modal: {
+        close: 'Затвори',
+      },
       paragraph: {
         paragraph: 'Параграф',
         outdent: 'Намаляване на отстъпа',

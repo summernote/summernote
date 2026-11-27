@@ -86,6 +86,9 @@
         fullscreen: 'На весь экран',
         codeview: 'Исходный код',
       },
+      modal: {
+        close: 'Закрыть',
+      },
       paragraph: {
         paragraph: 'Параграф',
         outdent: 'Уменьшить отступ',

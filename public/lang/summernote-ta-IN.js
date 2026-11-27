@@ -85,6 +85,9 @@
         fullscreen: 'முழுத்திரை',
         codeview: 'நிரலாக்க காட்சி',
       },
+      modal: {
+        close: 'மூடு',
+      },
       paragraph: {
         paragraph: 'பத்தி',
         outdent: 'வெளித்தள்ளு',

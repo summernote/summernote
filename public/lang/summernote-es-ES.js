@@ -87,6 +87,9 @@
         fullscreen: 'Pantalla completa',
         codeview: 'Ver el código fuente',
       },
+      modal: {
+        close: 'Cerrar',
+      },
       paragraph: {
         paragraph: 'Párrafo',
         outdent: 'Reducir la sangría',

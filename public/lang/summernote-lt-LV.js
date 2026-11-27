@@ -85,6 +85,9 @@
         fullscreen: 'Pa visu ekrānu',
         codeview: 'HTML kods',
       },
+      modal: {
+        close: 'Aizvērt',
+      },
       paragraph: {
         paragraph: 'Paragrāfs',
         outdent: 'Samazināt atkāpi',

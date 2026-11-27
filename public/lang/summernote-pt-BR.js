@@ -86,6 +86,9 @@
         fullscreen: 'Tela cheia',
         codeview: 'Ver código-fonte',
       },
+      modal: {
+        close: 'Fechar',
+      },
       paragraph: {
         paragraph: 'Parágrafo',
         outdent: 'Menor tabulação',

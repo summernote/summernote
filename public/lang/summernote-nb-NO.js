@@ -85,6 +85,9 @@
         fullscreen: 'Fullskjerm',
         codeview: 'HTML-visning',
       },
+      modal: {
+        close: 'Lukk',
+      },
       paragraph: {
         paragraph: 'Avsnitt',
         outdent: 'Tilbakerykk',

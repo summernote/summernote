@@ -85,6 +85,9 @@
         fullscreen: 'نمایش تمام صفحه',
         codeview: 'مشاهده ی کد',
       },
+      modal: {
+        close: 'بستن',
+      },
       paragraph: {
         paragraph: 'پاراگراف',
         outdent: 'کاهش تو رفتگی',

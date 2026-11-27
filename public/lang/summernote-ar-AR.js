@@ -85,6 +85,9 @@
         fullscreen: 'حجم الشاشة بالكامل',
         codeview: 'شفيرة المصدر',
       },
+      modal: {
+        close: 'غلق',
+      },
       paragraph: {
         paragraph: 'فقرة',
         outdent: 'محاذاة للخارج',

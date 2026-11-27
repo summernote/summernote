@@ -85,6 +85,9 @@
         fullscreen: 'Pantalla completa',
         codeview: 'Ver código fonte',
       },
+      modal: {
+        close: 'Pechar',
+      },
       paragraph: {
         paragraph: 'Parágrafo',
         outdent: 'Menos tabulación',

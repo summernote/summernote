@@ -87,6 +87,9 @@
         fullscreen: 'Дэлгэцийг дүүргэх',
         codeview: 'HTML-Code харуулах',
       },
+      modal: {
+        close: 'Хаалт',
+      },
       paragraph: {
         paragraph: 'Хэсэг',
         outdent: 'Догол мөр хасах',

@@ -85,6 +85,9 @@
         fullscreen: '全螢幕',
         codeview: '原始碼',
       },
+      modal: {
+        close: '關閉',
+      },
       paragraph: {
         paragraph: '段落',
         outdent: '取消縮排',

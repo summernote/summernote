@@ -85,6 +85,9 @@
         fullscreen: 'Celá obrazovka',
         codeview: 'HTML kód',
       },
+      modal: {
+        close: 'Zavrieť',
+      },
       paragraph: {
         paragraph: 'Odsek',
         outdent: 'Zväčšiť odsadenie',

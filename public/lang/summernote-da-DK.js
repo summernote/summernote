@@ -85,6 +85,9 @@
         fullscreen: 'Fuld skærm',
         codeview: 'HTML-Visning',
       },
+      modal: {
+        close: 'Luk',
+      },
       paragraph: {
         paragraph: 'Afsnit',
         outdent: 'Formindsk indryk',

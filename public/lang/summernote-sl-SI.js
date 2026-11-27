@@ -85,6 +85,9 @@
         fullscreen: 'Celozaslonski način',
         codeview: 'Pregled HTML kode',
       },
+      modal: {
+        close: 'Zapri',
+      },
       paragraph: {
         paragraph: 'Slogi odstavka',
         outdent: 'Zmanjšaj odmik',

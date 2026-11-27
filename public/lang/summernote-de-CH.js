@@ -86,6 +86,9 @@
         fullscreen: 'Vollbild',
         codeview: 'Quellcode anzeigen',
       },
+      modal: {
+        close: 'Schliessen',
+      },
       paragraph: {
         paragraph: 'Absatz',
         outdent: 'Einzug verkleinern',

@@ -85,6 +85,9 @@
         fullscreen: 'Fullskärm',
         codeview: 'HTML-visning',
       },
+      modal: {
+        close: 'Stäng',
+      },
       paragraph: {
         paragraph: 'Justera text',
         outdent: 'Minska indrag',

@@ -27,6 +27,7 @@ export default class HelpDialog {
       fade: this.options.dialogsFade,
       body: this.createShortcutList(),
       footer: body,
+      lang: this.lang,
       callback: ($node) => {
         $node.find('.modal-body,.note-modal-body').css({
           'max-height': 300,
