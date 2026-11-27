@@ -9,17 +9,17 @@ import $ from 'jquery';
  * @return {Promise} - then: dataUrl
  */
 export function readFileAsDataURL(file) {
-  return $.Deferred((deferred) => {
+  return new Promise((resolve, reject) => {
     $.extend(new FileReader(), {
       onload: (event) => {
         const dataURL = event.target.result;
-        deferred.resolve(dataURL);
+        resolve(dataURL);
       },
       onerror: (err) => {
-        deferred.reject(err);
+        reject(err);
       },
     }).readAsDataURL(file);
-  }).promise();
+  });
 }
 
 /**
@@ -31,17 +31,17 @@ export function readFileAsDataURL(file) {
  * @return {Promise} - then: $image
  */
 export function createImage(url) {
-  return $.Deferred((deferred) => {
+  return new Promise((resolve, reject) => {
     const $img = $('<img>');
 
     $img.one('load', () => {
       $img.off('error abort');
-      deferred.resolve($img);
+      resolve($img);
     }).one('error abort', () => {
       $img.off('load').detach();
-      deferred.reject($img);
+      reject($img);
     }).css({
       display: 'none',
     }).appendTo(document.body).attr('src', url);
-  }).promise();
+  });
 }

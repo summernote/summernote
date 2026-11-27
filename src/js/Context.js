@@ -58,7 +58,7 @@ export default class Context {
 
   _initialize() {
     // set own id
-    this.options.id = func.uniqueId($.now());
+    this.options.id = func.uniqueId(Date.now());
     // set default container for tooltips, popovers, and dialogs
     this.options.container = this.options.container || this.layoutInfo.editor;
 

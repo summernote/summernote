@@ -101,7 +101,7 @@ export default class LinkDialog {
    * @return {Promise}
    */
   showLinkDialog(linkInfo) {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
       const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
@@ -153,7 +153,7 @@ export default class LinkDialog {
         $linkBtn.one('click', (event) => {
           event.preventDefault();
 
-          deferred.resolve({
+          resolve({
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
@@ -169,13 +169,11 @@ export default class LinkDialog {
         $linkUrl.off();
         $linkBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
-        }
+        reject();
       });
 
       this.ui.showDialog(this.$dialog);
-    }).promise();
+    });
   }
 
   /**
@@ -188,7 +186,7 @@ export default class LinkDialog {
     this.showLinkDialog(linkInfo).then((linkInfo) => {
       this.context.invoke('editor.restoreRange');
       this.context.invoke('editor.createLink', linkInfo);
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }

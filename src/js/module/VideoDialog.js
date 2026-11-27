@@ -203,7 +203,7 @@ export default class VideoDialog {
         // insert video node
         this.context.invoke('editor.insertNode', $node);
       }
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }
@@ -215,7 +215,7 @@ export default class VideoDialog {
    * @return {Promise}
    */
   showVideoDialog(/* text */) {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
       const $videoUrl = this.$dialog.find('.note-video-url');
       const $videoBtn = this.$dialog.find('.note-video-btn');
 
@@ -232,7 +232,7 @@ export default class VideoDialog {
 
         $videoBtn.on('click', (event) => {
           event.preventDefault();
-          deferred.resolve($videoUrl.val());
+          resolve($videoUrl.val());
         });
 
         this.bindEnterKey($videoUrl, $videoBtn);
@@ -242,9 +242,7 @@ export default class VideoDialog {
         $videoUrl.off();
         $videoBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
-        }
+        reject();
       });
 
       this.ui.showDialog(this.$dialog);
