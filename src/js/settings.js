@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { version } from '../../package.json';
 import './summernote-en-US';
 import './summernote';
 import dom from './core/dom';
@@ -28,7 +29,7 @@ import AirPopover from './module/AirPopover';
 import HintPopover from './module/HintPopover';
 
 $.summernote = $.extend($.summernote, {
-  version: '@@VERSION@@',
+  version,
   plugins: {},
 
   dom: dom,
