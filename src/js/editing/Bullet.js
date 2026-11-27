@@ -31,13 +31,21 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        const previousList = this.findList(head.previousSibling);
-        if (previousList) {
-          paras.map((para) => previousList.appendChild(para));
-        } else {
-          this.wrapList(paras, head.parentNode.nodeName);
-          paras.map((para) => para.parentNode).map((para) => this.appendToPrevious(para));
+        // find previous li sibling (not just any sibling)
+        let prevLi = head.previousSibling;
+        while (prevLi && !dom.isLi(prevLi)) {
+          prevLi = prevLi.previousSibling;
         }
+        if (prevLi) {
+          const previousList = this.findList(prevLi);
+          if (previousList) {
+            paras.map((para) => previousList.appendChild(para));
+          } else {
+            this.wrapList(paras, head.parentNode.nodeName);
+            paras.map((para) => para.parentNode).map((para) => prevLi.appendChild(para));
+          }
+        }
+        // if no previous li exists, do nothing
       } else {
         $.each(paras, (idx, para) => {
           $(para).css('marginLeft', (idx, val) => {
@@ -62,7 +70,13 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        this.releaseList([paras]);
+        const parentList = head.parentNode;
+        const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+        if (isNestedList) {
+          this.releaseList([paras], false);
+        } else {
+          this.releaseList([paras]);
+        }
       } else {
         $.each(paras, (idx, para) => {
           $(para).css('marginLeft', (idx, val) => {
@@ -256,7 +270,7 @@ export default class Bullet {
    * @return {HTMLNode}
    */
   appendToPrevious(node) {
-    return node.previousSibling ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
+    return node.previousSibling && dom.isLi(node.previousSibling) ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
   }
 
   /**
@@ -268,7 +282,7 @@ export default class Bullet {
    * @return {Array[]}
    */
   findList(node) {
-    return node ? lists.find(node.children, (child) => ['OL', 'UL'].indexOf(child.nodeName) > -1) : null;
+    return node && node.children ? lists.find(node.children, (child) => ['OL', 'UL'].indexOf(child.nodeName) > -1) : null;
   }
 
   /**

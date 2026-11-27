@@ -63,6 +63,90 @@ $img-margin-right: 10px;
       img.note-float-right {
         margin-left: $img-margin-left;
       }
+
+      // === List styles ===
+      ol, ul {
+        list-style: none;
+        padding-inline-start: 20px;
+      }
+
+      // Ordered Lists: generalized via CSS counters() — works at any nesting depth
+      ol {
+        counter-reset: ol-item;
+      }
+      li {
+        margin-top: 0.5em;
+      }
+
+      ol > li {
+        counter-increment: ol-item;
+        position: relative;
+        padding-left: 3em;
+        line-height: 1.2;
+
+        &::before {
+          content: counters(ol-item, ".") ".";
+          position: absolute;
+          left: 0;
+          width: 2.5em;
+          text-align: right;
+          padding-right: 0.4em;
+          line-height: inherit;
+        }
+      }
+
+      ol ol ol > li {
+        padding-left: 4em;
+        &::before {
+          width: 3.5em; 
+        }
+      }  
+      ol ol ol ol > li {
+        padding-left: 5em;
+        &::before {
+          width: 4.5em; 
+        }
+      } 
+      ol ol ol ol ol > li {
+        padding-left: 6em;
+        &::before {
+          width: 5.5em; 
+        }
+      } 
+      ol ol ol ol ol ol > li {
+        padding-left: 7em;
+        &::before {
+          width: 6.5em; 
+        }
+      } 
+
+      // Unordered Lists
+      ul > li {
+        position: relative;
+        padding-left: 1.75em;
+        line-height: 1.2;
+
+        &::before {
+          position: absolute;
+          left: 0.1em;
+          line-height: inherit;
+        }
+      }
+
+      ul > li::before          { content: "•"; }
+      ul ul > li::before       { content: "◦"; }
+      ul ul ul > li::before    { content: "▪"; }
+
+    }
+  }
+}
+
+// Fix Firefox cursor position in empty list items
+@-moz-document url-prefix() {
+  .note-editor .note-editing-area .note-editable {
+    ul > li:has(> br:only-child),
+    ol > li:has(> br:only-child) {
+      align-items: baseline;
     }
   }
 }

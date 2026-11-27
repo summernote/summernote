@@ -138,16 +138,52 @@ describe('Editor', () => {
     });
 
     it('should indent and outdent list', async() => {
-      editor.insertOrderedList();
-      await expectContentsAwait(context, '<ol><li>hello</li></ol>');
+      context.invoke('code', '<ol><li>first</li><li>hello</li></ol>');
+      $editable.appendTo('body');
+      var secondLi = $editable.find('li').eq(1)[0];
+      var textNode = secondLi.firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+      await nextTick();
+
       editor.indent();
-      await expectContentsAwait(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
-      editor.indent();
-      await expectContentsAwait(context, '<ol><li><ol><li><ol><li>hello</li></ol></li></ol></li></ol>');
+      await expectContentsAwait(context, '<ol><li>first<ol><li>hello</li></ol></li></ol>');
       editor.outdent();
-      await expectContentsAwait(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
-      editor.outdent();
-      await expectContentsAwait(context, '<ol><li>hello</li></ol>');
+      await expectContentsAwait(context, '<ol><li>first</li><li>hello</li></ol>');
+    });
+  });
+
+  describe('tab and untab in list', () => {
+    it('should not indent the first list item when there is no previous sibling', async() => {
+      context.invoke('code', '<ul><li>first</li><li>second</li></ul>');
+      $editable.appendTo('body');
+      var firstLi = $editable.find('li').eq(0)[0];
+      var textNode = firstLi.firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+      await nextTick();
+      editor.tab();
+      await expectContentsAwait(context, '<ul><li>first</li><li>second</li></ul>');
+    });
+
+    it('should indent a list item under the previous sibling on tab', async() => {
+      context.invoke('code', '<ul><li>first</li><li>second</li></ul>');
+      $editable.appendTo('body');
+      var secondLi = $editable.find('li').eq(1)[0];
+      var textNode = secondLi.firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+      await nextTick();
+      editor.tab();
+      await expectContentsAwait(context, '<ul><li>first<ul><li>second</li></ul></li></ul>');
+    });
+
+    it('should outdent a nested list item one level on shift+tab', async() => {
+      context.invoke('code', '<ul><li>first<ul><li>nested</li></ul></li></ul>');
+      $editable.appendTo('body');
+      var nestedLi = $editable.find('li').eq(1)[0];
+      var textNode = nestedLi.firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+      await nextTick();
+      editor.untab();
+      await expectContentsAwait(context, '<ul><li>first</li><li>nested</li></ul>');
     });
   });
 

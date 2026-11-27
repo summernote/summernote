@@ -463,6 +463,18 @@ export default class Editor {
     const eventName = keyMap[keys.join('+')];
 
     if (keyName === 'TAB' && !this.options.tabDisable) {
+      // check if in a list - always handle TAB/SHIFT+TAB in lists
+      const rng = this.getLastRange();
+      if (rng) {
+        const node = rng.sc || rng.ec;
+        const listItem = dom.ancestor(node, dom.isLi);
+        if (listItem && eventName) {
+          if (this.context.invoke(eventName) !== false) {
+            event.preventDefault();
+            return true;
+          }
+        }
+      }
       this.afterCommand();
     } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
@@ -703,6 +715,16 @@ export default class Editor {
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.table.tab(rng);
     } else {
+      // check if in a list item → indent
+      const node = rng.sc || rng.ec;
+      const listItem = dom.ancestor(node, dom.isLi);
+      if (listItem) {
+        this.beforeCommand();
+        this.bullet.indent(this.editable);
+        this.afterCommand();
+        return;
+      }
+
       if (this.options.tabSize === 0) {
         return false;
       }
@@ -723,6 +745,32 @@ export default class Editor {
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.table.tab(rng, true);
     } else {
+      // check if in a list item, always handle tab key in lists
+      const node = rng.sc || rng.ec;
+      const listItem = dom.ancestor(node, dom.isLi);
+      if (listItem) {
+        const text = $(listItem).text().trim();
+        const isEmpty = text.length === 0 || listItem.innerHTML.trim() === '' || listItem.innerHTML.trim() === '<br>';
+        if (isEmpty) {
+          const parentList = listItem.parentNode;
+          const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+          if (isNestedList) {
+            this.beforeCommand();
+            this.bullet.outdent(this.editable);
+            this.afterCommand();
+          } else {
+            this.beforeCommand();
+            this.bullet.releaseList([[listItem]], true);
+            this.afterCommand();
+          }
+        } else {
+          this.beforeCommand();
+          this.bullet.outdent(this.editable);
+          this.afterCommand();
+        }
+        return;
+      }
+
       if (this.options.tabSize === 0) {
         return false;
       }
