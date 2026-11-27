@@ -902,7 +902,16 @@ function splitTree(root, point, options) {
     if (ifHasNextSibling && point.offset != 0 && isRightEdgePoint(point)) {
       let nestSibling = ifHasNextSibling.nextSibling;
       let textNode;
-      if (nestSibling.nodeType == 1) {
+      if (nestSibling.nodeType == 1 && !nestSibling.firstChild) {
+        // An element without children, e.g. <br> or <img>, has no first child
+        // to move to, so split right before it instead
+        point = {
+          node: nestSibling.parentNode,
+          offset: position(nestSibling),
+        };
+        ancestors = listAncestor(point.node, func.eq(root));
+      }
+      else if (nestSibling.nodeType == 1) {
         textNode = nestSibling.childNodes[0];
         ancestors = listAncestor(textNode, func.eq(root));
         point = {
@@ -919,6 +928,9 @@ function splitTree(root, point, options) {
         };
       }
     }
+  }
+  if (ancestors.length === 1) {
+    return splitNode(point, options);
   }
   return ancestors.reduce(function(node, parent) {
     if (node === point.node) {

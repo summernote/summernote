@@ -317,6 +317,26 @@ describe('base:core.dom', () => {
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
       });
 
+      it('should be split before a next sibling without children (right edge case)', () => {
+        let $cont = $('<div class="note-editable"><p><span>test123</span><br></p></div>');
+        let text = $cont.find('span')[0].firstChild;
+        let para = $cont.find('p')[0];
+        let result = dom.splitTree(para, { node: text, offset: 7 });
+
+        expect($cont.html()).to.equalsIgnoreCase('<p><span>test123</span></p><p><br></p>');
+        expect(result).to.equal(para.nextSibling);
+      });
+
+      it('should be split before a nested next sibling without children (right edge case)', () => {
+        let $cont = $('<div class="note-editable"><p><b><span>test123</span><img src="x.png"></b>after</p></div>');
+        let text = $cont.find('span')[0].firstChild;
+        let para = $cont.find('p')[0];
+        let result = dom.splitTree(para, { node: text, offset: 7 });
+
+        expect($cont.html()).to.equalsIgnoreCase('<p><b><span>test123</span></b></p><p><b><img src="x.png"></b>after</p>');
+        expect(result).to.equal(para.nextSibling);
+      });
+
       it('should be split by span tag with offset 2 (1 depth and element case)', () => {
         let $cont = $('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); // busi
         let $span = $cont.find('span');
