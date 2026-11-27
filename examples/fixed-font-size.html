@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Summernote - Fixed Font Size Unit</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+
+  <script type="module" src="/src/styles/bs4/summernote-bs4.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('.summernote').summernote({
+        height: 550,
+        tabsize: 2,
+        fixedFontSizeUnit: 'pt',
+        fontSizeStep: 0.5,
+        spellCheck: false,
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['fontname', ['fontname', 'fontsize']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture', 'video']],
+          ['view', ['fullscreen', 'codeview', 'help']],
+        ],
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="container py-4">
+    <h1>Summernote with Fixed Font Size Unit</h1>
+    <p>
+      <span class="badge badge-primary">jQuery v3.5.1</span>
+      <span class="badge badge-info">Bootstrap v4.4.1</span>
+    </p>
+    <div class="summernote">
+      <p>This editor is configured with <code>fixedFontSizeUnit: 'pt'</code> and <code>fontSizeStep: 0.5</code>.</p>
+
+      <hr>
+      <h4>Foreign Unit Conversion</h4>
+      <p style="font-size: 16px">16px (Exact conversion: 12pt)</p>
+      <p style="font-size: 21px">21px (15.75pt &rarr; Snaps to 16pt)</p>
+      <p style="font-size: 10mm">10mm (~28.35pt &rarr; Snaps to 28.5pt)</p>
+      <p style="font-size: 0.25cm">0.25cm (~7.09pt &rarr; Snaps to 7.0pt)</p>
+      <p style="font-size: 0.5in">0.5in (36pt)</p>
+      <p style="font-size: 1pc">1pc (12pt)</p>
+      <p style="font-size: 1em">1em (Relative unit, usually computes to 16px &rarr; 12pt)</p>
+
+      <hr>
+      <h4>Step Rounding Tests</h4>
+      <p style="font-size: 10.1pt">10.1pt &rarr; 10.0pt</p>
+      <p style="font-size: 10.24pt">10.24pt &rarr; 10.0pt</p>
+      <p style="font-size: 10.26pt">10.26pt &rarr; 10.5pt</p>
+      <p style="font-size: 10.74pt">10.74pt &rarr; 10.5pt</p>
+      <p style="font-size: 10.76pt">10.76pt &rarr; 11.0pt</p>
+    </div>
+
+    <div class="card mt-3">
+      <div class="card-header">Source Code</div>
+      <div class="card-body">
+        <pre><code id="source-code"></code></pre>
+      </div>
+    </div>
+  </div>
+  <script>
+    $('#source-code').text($('script[type="text/javascript"]').html().trim());
+  </script>
+</body>
+</html>

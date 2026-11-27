@@ -600,4 +600,126 @@ describe('Editor', () => {
       await expectContentsAwait(context, '<a href="http://summernote.org">hello</a>');
     });
   });
+
+  describe('Fixed Font Size Unit', () => {
+    it('should apply fixed font size unit (pt)', async() => {
+      var options = $.extend({}, $.summernote.options);
+      options.fixedFontSizeUnit = 'pt';
+
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+      $editable = context.layoutInfo.editable;
+      $editable.appendTo('body');
+
+      var textNode = $editable.find('p')[0].firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 5).select());
+
+      await nextTick();
+      editor.fontSize(12);
+      await expectContentsAwait(context, '<p><span style="font-size: 12pt;">hello</span></p>');
+    });
+
+    it('should convert and snap foreign units to fixed unit (pt)', async() => {
+      var options = $.extend({}, $.summernote.options);
+      options.fixedFontSizeUnit = 'pt';
+      options.fontSizeStep = 0.5;
+
+      var conversions = [
+        { val: '16px', expect: 12 },
+        { val: '21px', expect: 16 },   // 21px   -> 15.75pt  -> 16.0pt
+        { val: '0.25cm', expect: 7 },  // 0.25cm -> ~7.09pt  ->  7.0pt
+        { val: '10mm', expect: 28.5 }, // 10mm   -> ~28.35pt -> 28.5pt
+        { val: '0.5in', expect: 36 },  // 0.5in  ->             36.0pt
+        { val: '1pc', expect: 12 },     // 1pc    ->             12.0pt
+      ];
+
+      for (let test of conversions) {
+        context = new Context($('<div><p style="font-size: ' + test.val + '">hello</p></div>'), options);
+        editor = context.modules.editor;
+        $editable = context.layoutInfo.editable;
+        $editable.appendTo('body');
+
+        var textNode = $editable.find('p')[0].firstChild;
+        range.create(textNode, 0, textNode, 5).select();
+
+        await nextTick();
+        const style = editor.currentStyle();
+
+        // Use 'closeTo' for floating point comparisons to avoid tiny precision errors
+        expect(style['font-size']).to.be.closeTo(test.expect, 0.01);
+        expect(style['font-size-unit']).to.equal('pt');
+      }
+    });
+  });
+
+  describe('Font Size Step', () => {
+    it('should snap values to default step (1.0) when setting value is "null"', async() => {
+      var options = $.extend({}, $.summernote.options);
+      options.fontSizeStep = null;
+
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+      $editable = context.layoutInfo.editable;
+      $editable.appendTo('body');
+
+      // Select 'hello'
+      var textNode = $editable.find('p')[0].firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 5).select());
+
+      await nextTick();
+
+      const tests = [
+        { input: 10.1, output: '10px' },
+        { input: 10.49, output: '10px' },
+        { input: 10.51, output: '11px' },
+        { input: 10.9, output: '11px' },
+      ];
+
+      for (let test of tests) {
+        editor.fontSize(test.input);
+
+        await nextTick();
+
+        var $span = $editable.find('span').last();
+        expect($span.css('font-size')).to.equal(test.output);
+
+        var spanText = $span[0].firstChild;
+        editor.setLastRange(range.create(spanText, 0, spanText, 5).select());
+      }
+    });
+
+    it('should snap values to explicitly defined step (0.25)', async() => {
+      var options = $.extend({}, $.summernote.options);
+      options.fontSizeStep = 0.25;
+
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+      $editable = context.layoutInfo.editable;
+      $editable.appendTo('body');
+
+      var textNode = $editable.find('p')[0].firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 5).select());
+
+      await nextTick();
+
+      const tests = [
+        { input: 10.1, output: '10px' },
+        { input: 10.15, output: '10.25px' },
+        { input: 10.3, output: '10.25px' },
+        { input: 10.4, output: '10.5px' },
+      ];
+
+      for (let test of tests) {
+        editor.fontSize(test.input);
+
+        await nextTick();
+
+        var $span = $editable.find('span').last();
+        expect($span.css('font-size')).to.equal(test.output);
+
+        var spanText = $span[0].firstChild;
+        editor.setLastRange(range.create(spanText, 0, spanText, 5).select());
+      }
+    });
+  });
 });

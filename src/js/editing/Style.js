@@ -35,10 +35,22 @@ export default class Style {
     const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
     const styleInfo = this.jQueryCSS($node, properties) || {};
 
-    const fontSize = $node[0].style.fontSize || styleInfo['font-size'];
+    // cache computed font-size px from the browser for fixed-unit conversion
+    const computedPx = parseFloat(styleInfo['font-size']);
+    styleInfo['_font-size-computed-px'] = computedPx;
 
-    styleInfo['font-size'] = parseInt(fontSize, 10);
-    styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
+    // parse inline font-size (assumed browser-validated if present)
+    const inlineFontSize = $node[0].style.fontSize || '';
+    const inlineFontSizeMatch = inlineFontSize ?
+      ('' + inlineFontSize).match(/^([+-]?(?:\d+|\d*\.\d+))(?:\s*([a-zA-Z%]+))?$/) : null;
+
+    if (inlineFontSizeMatch) { // report inline styles if they exist
+      styleInfo['font-size'] = parseFloat(inlineFontSizeMatch[1]);
+      styleInfo['font-size-unit'] = inlineFontSizeMatch[2] ? inlineFontSizeMatch[2].toLowerCase() : null;
+    } else { // fall back to computed px
+      styleInfo['font-size'] = computedPx;
+      styleInfo['font-size-unit'] = 'px';
+    }
 
     return styleInfo;
   }
@@ -148,8 +160,12 @@ export default class Style {
     if (para && para.style['line-height']) {
       styleInfo['line-height'] = para.style.lineHeight;
     } else {
-      const lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
-      styleInfo['line-height'] = lineHeight.toFixed(1);
+      const lineHeightValue = parseFloat(styleInfo['line-height']);
+      const fontSizeValue = parseFloat(styleInfo['font-size']);
+      if (isFinite(lineHeightValue) && isFinite(fontSizeValue) && fontSizeValue) {
+        const lineHeight = lineHeightValue / fontSizeValue;
+        styleInfo['line-height'] = lineHeight.toFixed(1);
+      }
     }
 
     styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
