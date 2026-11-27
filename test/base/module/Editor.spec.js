@@ -456,6 +456,31 @@ describe('Editor', () => {
     });
   });
 
+  describe('fontStyling', () => {
+    it('should remove bogus character when selection changes', async() => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      await nextTick();
+
+      var textNode = $editable.find('p')[0].firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+
+      editor.fontSize(20);
+
+      var bogusSpan = $editable.data('bogus');
+      expect(bogusSpan).toBeDefined();
+
+      editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
+
+      document.dispatchEvent(new Event('selectionchange'));
+      await nextTick();
+
+      expect($editable.data('bogus')).toBeUndefined();
+      expect($editable.find('span').length).toEqual(0);
+      expect($editable.html()).toEqual('<p>hello</p>');
+    });
+  });
+
   describe('createLink', () => {
     it('should create normal link', async() => {
       var text = 'hello';
