@@ -396,12 +396,13 @@ export default class Editor {
       }
     });
 
-    this.$editable.attr('spellcheck', this.options.spellCheck);
+    // jQuery 4 removes the attribute for .attr(name, false), so pass strings
+    this.$editable.attr('spellcheck', String(this.options.spellCheck));
 
-    this.$editable.attr('autocorrect', this.options.spellCheck);
+    this.$editable.attr('autocorrect', String(this.options.spellCheck));
 
     if (this.options.disableGrammar) {
-      this.$editable.attr('data-gramm', false);
+      this.$editable.attr('data-gramm', 'false');
     }
 
     // init content before set event
@@ -886,7 +887,7 @@ export default class Editor {
         rng.select();
       }
     } else {
-      const noteStatusOutput = $.now();
+      const noteStatusOutput = Date.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
       setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }

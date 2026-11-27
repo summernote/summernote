@@ -58,7 +58,7 @@ export default class Context {
 
   _initialize() {
     // set own id
-    this.options.id = func.uniqueId($.now());
+    this.options.id = func.uniqueId(Date.now());
     // set default container for tooltips, popovers, and dialogs
     this.options.container = this.options.container || this.layoutInfo.editor;
 
@@ -117,7 +117,7 @@ export default class Context {
   }
 
   enable() {
-    this.layoutInfo.editable.attr('contenteditable', true);
+    this.layoutInfo.editable.attr('contenteditable', 'true');
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
     this.options.editing = true;
@@ -128,7 +128,8 @@ export default class Context {
     if (this.invoke('codeview.isActivated')) {
       this.invoke('codeview.deactivate');
     }
-    this.layoutInfo.editable.attr('contenteditable', false);
+    // jQuery 4 removes the attribute for .attr(name, false), so pass a string
+    this.layoutInfo.editable.attr('contenteditable', 'false');
     this.options.editing = false;
     this.invoke('toolbar.deactivate', true);
 

@@ -366,8 +366,6 @@ export default class Table {
   addCol(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     const row = $(cell).closest('tr');
-    const rowsGroup = $(row).siblings();
-    rowsGroup.push(row);
 
     const vTable = new TableResultAction(cell, TableResultAction.where.Column,
       TableResultAction.requestAction.Add, $(row).closest('table')[0]);
