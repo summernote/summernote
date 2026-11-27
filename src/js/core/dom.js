@@ -847,7 +847,12 @@ function splitNode(point, options) {
 
   // split #text
   if (isText(point.node)) {
-    return point.node.splitText(point.offset);
+    // Guard against a stale point whose offset was computed against a
+    // longer version of this text node (e.g. before the browser merged
+    // or shortened it during a paste). Without this, splitText throws
+    // IndexSizeError.
+    const offset = Math.min(point.offset, point.node.length);
+    return point.node.splitText(offset);
   } else {
     const childNode = point.node.childNodes[point.offset];
     let childNodes = listNext(childNode);
